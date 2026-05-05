@@ -86,6 +86,25 @@ export async function loadBackendConnections() {
   return request(`/api/users/${encodeURIComponent(userId)}/connections`);
 }
 
+export async function loadBackendProviderStatus() {
+  const [carrierData, emailData] = await Promise.all([
+    request('/api/carriers'),
+    request('/api/email/providers'),
+  ]);
+
+  return {
+    carriers: carrierData.carriers || [],
+    emailProviders: emailData.providers || [],
+  };
+}
+
+export async function disconnectBackendConnection(providerId) {
+  const userId = await getOrCreateAllioUserId();
+  return request(`/api/users/${encodeURIComponent(userId)}/connections/${encodeURIComponent(providerId)}`, {
+    method: 'DELETE',
+  });
+}
+
 export async function trackWithBackendCarrier(providerId, trackingNumber) {
   const userId = await getOrCreateAllioUserId();
   const params = new URLSearchParams({

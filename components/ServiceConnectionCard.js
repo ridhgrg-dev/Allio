@@ -3,11 +3,25 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { openProviderSignIn } from '../services/accountLinkService';
 
-export default function ServiceConnectionCard({ name, status, connected, onToggle, provider }) {
+export default function ServiceConnectionCard({
+  name,
+  status,
+  connected,
+  onToggle,
+  onOpen,
+  provider,
+  actionLabel,
+  helperText,
+}) {
   const isPlanned = status === 'planned';
 
   async function handleOpen() {
     try {
+      if (onOpen) {
+        await onOpen(provider);
+        return;
+      }
+
       if (provider?.url) {
         await openProviderSignIn(provider);
       }
@@ -28,9 +42,10 @@ export default function ServiceConnectionCard({ name, status, connected, onToggl
       <View style={styles.copy}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.status}>{connected ? 'Connected' : isPlanned ? 'Roadmap' : 'Ready to link'}</Text>
+        {helperText ? <Text style={styles.helper}>{helperText}</Text> : null}
       </View>
       <View style={styles.actions}>
-        {provider?.url ? (
+        {provider?.url || onOpen ? (
           <Pressable accessibilityRole="button" onPress={handleOpen} style={styles.iconButton}>
             <Ionicons name="open-outline" size={16} color="#111827" />
           </Pressable>
@@ -47,7 +62,7 @@ export default function ServiceConnectionCard({ name, status, connected, onToggl
           ]}
         >
           <Text style={[styles.buttonText, connected && styles.buttonTextConnected]}>
-            {connected ? 'Linked' : isPlanned ? 'Soon' : 'Link'}
+            {connected ? 'Linked' : isPlanned ? 'Soon' : actionLabel || 'Link'}
           </Text>
         </Pressable>
       </View>
@@ -99,6 +114,11 @@ const styles = StyleSheet.create({
     color: '#6b7280',
     fontSize: 13,
     fontWeight: '600',
+  },
+  helper: {
+    color: '#8a94a6',
+    fontSize: 12,
+    lineHeight: 16,
   },
   button: {
     minWidth: 68,

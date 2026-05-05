@@ -58,10 +58,18 @@ export default function useLinkedAccounts() {
     await persistLinked(nextAccounts);
   }
 
+  async function mergeLinked(nextLinkedValues) {
+    await persistLinked({
+      ...linkedAccounts,
+      ...nextLinkedValues,
+    });
+  }
+
   return {
     linkedAccounts,
     toggleLinked,
     setLinked,
+    mergeLinked,
     linkError,
   };
 }

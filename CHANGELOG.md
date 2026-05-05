@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.8.0 - 2026-05-05
+
+- Upgraded Connected Services from prototype toggles to backend-aware account linking.
+- Added backend refresh for linked UPS, FedEx, USPS, DHL, Gmail, and Outlook accounts.
+- Added backend disconnect support from Linked Accounts.
+- Added provider credential status messaging so dev-linking versus real OAuth configuration is visible.
+
 ## 1.7.1 - 2026-05-05
 
 - Set the local development backend fallback URL to `http://192.168.1.166:4100`.

@@ -40,8 +40,8 @@ The Expo app also defaults to `http://192.168.1.166:4100` for local development.
 ## MVP Integration Notes
 
 - Delivery tracking is mocked behind `services/deliveryService.js` for future AfterShip or EasyPost integration.
-- Direct carrier account linking uses the backend OAuth foundation in `backend/`.
-- Gmail/Outlook inbox checking uses the backend OAuth foundation in `backend/`.
+- Direct carrier account linking uses the backend OAuth foundation in `backend/`; Linked Accounts can connect, refresh, and disconnect UPS, FedEx, USPS, and DHL.
+- Gmail/Outlook inbox checking uses the backend OAuth foundation in `backend/`; Linked Accounts can connect, refresh, and disconnect Gmail and Outlook.
 - Wikipedia search uses the public Wikipedia REST search endpoint.
 - Movie/TV search is mocked behind `services/movieService.js` for future TMDB or OMDb integration.
 - Email sending is mocked behind `services/emailService.js`; no Gmail API or background sync is included.
