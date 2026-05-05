@@ -1,11 +1,16 @@
 import { Linking } from 'react-native';
 import { getOrCreateAllioUserId, loadBackendUrl } from './storageService';
 
-const LOCAL_DEV_ALLIO_API_URL = 'http://192.168.1.166:4100';
+const LOCAL_DEV_ALLIO_API_URL = 'http://192.168.8.142:4100';
+const RETIRED_LOCAL_DEV_URLS = ['http://192.168.1.166:4100'];
 const ENV_ALLIO_API_URL = process.env.EXPO_PUBLIC_ALLIO_API_URL || LOCAL_DEV_ALLIO_API_URL;
 
 export async function getBackendBaseUrl() {
   const savedUrl = await loadBackendUrl();
+  if (RETIRED_LOCAL_DEV_URLS.includes(savedUrl)) {
+    return ENV_ALLIO_API_URL;
+  }
+
   return savedUrl || ENV_ALLIO_API_URL;
 }
 

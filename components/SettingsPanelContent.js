@@ -80,7 +80,7 @@ export default function SettingsPanelContent({ navigation, onClose }) {
         label="Allio backend URL"
         value={backendUrl}
         onChangeText={setBackendUrl}
-        placeholder="http://192.168.1.166:4100"
+        placeholder="http://192.168.8.142:4100"
         autoCapitalize="none"
         autoComplete="off"
         returnKeyType="done"

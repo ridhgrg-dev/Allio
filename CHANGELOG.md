@@ -8,6 +8,12 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.8.4 - 2026-05-05
+
+- Updated the local development backend URL to the current Mac IP `http://192.168.8.142:4100`.
+- Added a saved-backend-url migration away from the retired `http://192.168.1.166:4100` address.
+- Updated backend scripts, settings placeholder, and docs to match the current LAN address.
+
 ## 1.8.3 - 2026-05-05
 
 - Updated the root backend dev script to bind on `0.0.0.0` for Expo Go device access.
