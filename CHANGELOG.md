@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.8.2 - 2026-05-05
+
+- Added `.nvmrc` and Node engine guidance for Node 20/22 LTS.
+- Updated `npm start` to clear Metro cache and use LAN mode by default.
+- Added a tunnel start script for phones that cannot reach the local LAN server.
+- Documented the Node 24 Expo dev-server startup issue.
+
 ## 1.8.1 - 2026-05-05
 
 - Centralized Home dashboard and hamburger navigation metadata.

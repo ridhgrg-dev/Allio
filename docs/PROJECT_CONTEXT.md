@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.8.1`
+- Version: `1.8.2`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -57,10 +57,13 @@ Version `1.8.0` upgrades Linked Accounts to use backend account-linking actions 
 
 Version `1.8.1` cleans up app organization by centralizing Home/Menu section metadata, making the hamburger panel a navigation-only surface, and reducing Settings to backend plus account setup.
 
+Version `1.8.2` adds Node LTS pinning and safer Expo start scripts after Expo dev server startup failed under Node 24.
+
 ## Technical Notes
 
 - Must run in Expo Go.
 - Project is pinned to Expo SDK 54 because the App Store Expo Go version currently supports SDK 54.
+- Use Node LTS, preferably Node 22 from `.nvmrc`; Node 24 can crash Expo's dev server port finder before the app opens.
 - Use `env PATH=/usr/local/bin:$PATH ...` if the assistant sandbox cannot see `node` or `npm`.
 - Keep UI and service logic separate.
 - Keep reusable UI in `components/`, app screens in `screens/`, API/mock boundaries in `services/`, and navigation in `navigation/`.
@@ -77,7 +80,7 @@ Run locally:
 
 ```bash
 npm install
-npx expo start --clear
+npm start
 ```
 
 ## Git Practice

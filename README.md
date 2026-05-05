@@ -11,6 +11,20 @@ npm start
 
 Open the QR code with Expo Go on iOS or Android.
 
+Allio expects Node LTS. If Expo does not open or the dev server crashes, use Node 22:
+
+```bash
+nvm install 22
+nvm use
+npm start
+```
+
+If your phone cannot reach the LAN QR code, use:
+
+```bash
+npm run start:tunnel
+```
+
 ## Run With Backend
 
 The backend is optional for the current Expo Go prototype. It is needed for real user-scoped carrier and email account linking.
