@@ -17,18 +17,18 @@ const styles = StyleSheet.create({
     marginBottom: 22,
   },
   title: {
-    color: '#18201f',
+    color: '#111827',
     fontSize: 40,
-    fontWeight: '800',
+    fontWeight: '900',
     letterSpacing: 0,
   },
   tagline: {
-    color: '#43615c',
+    color: '#3155d4',
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: '800',
   },
   subtitle: {
-    color: '#6d6960',
+    color: '#6b7280',
     fontSize: 15,
     lineHeight: 22,
   },

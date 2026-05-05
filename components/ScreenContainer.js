@@ -20,7 +20,7 @@ export default function ScreenContainer({ children, scroll = true }) {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#f7f2e8',
+    backgroundColor: '#f7f8fb',
   },
   content: {
     padding: 20,
