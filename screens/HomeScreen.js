@@ -4,58 +4,7 @@ import AppCard from '../components/AppCard';
 import AppHeader from '../components/AppHeader';
 import AppShell from '../components/AppShell';
 import ScreenContainer from '../components/ScreenContainer';
-
-const categories = [
-  {
-    title: 'Connected Services',
-    description: 'Link delivery, Wikipedia, movie/TV, and email accounts in one place.',
-    route: 'Connections',
-    accent: '#111827',
-    meta: 'Account hub',
-    label: 'Manage',
-    icon: 'link-outline',
-  },
-  {
-    title: 'Delivery Tracking',
-    description: 'Track packages now and prepare for carrier account sync.',
-    route: 'Delivery',
-    accent: '#0f766e',
-    meta: '4 carrier options',
-    icon: 'cube-outline',
-  },
-  {
-    title: 'Wikipedia Search',
-    description: 'Search public pages and connect a Wikimedia profile later.',
-    route: 'Wikipedia',
-    accent: '#3155d4',
-    meta: 'Real search',
-    icon: 'library-outline',
-  },
-  {
-    title: 'Movie/TV Search',
-    description: 'Explore titles and reserve room for watchlist integrations.',
-    route: 'Movies',
-    accent: '#a855f7',
-    meta: 'Media hub',
-    icon: 'film-outline',
-  },
-  {
-    title: 'Email (basic)',
-    description: 'Compose now, then link Gmail or Outlook when auth is ready.',
-    route: 'Email',
-    accent: '#ea580c',
-    meta: 'Mock send',
-    icon: 'mail-outline',
-  },
-  {
-    title: 'Coming Soon',
-    description: 'A place for future app and service connectors.',
-    disabled: true,
-    accent: '#94a3b8',
-    meta: 'Roadmap',
-    icon: 'sparkles-outline',
-  },
-];
+import { appSections } from '../services/appSectionService';
 
 export default function HomeScreen({ navigation }) {
   return (
@@ -79,7 +28,7 @@ export default function HomeScreen({ navigation }) {
           </View>
         </View>
         <View style={styles.grid}>
-          {categories.map((category) => (
+          {appSections.map((category) => (
             <AppCard
               key={category.title}
               title={category.title}

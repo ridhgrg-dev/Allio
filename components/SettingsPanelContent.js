@@ -93,10 +93,8 @@ export default function SettingsPanelContent({ navigation, onClose }) {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Settings</Text>
-        <MenuRow icon="link-outline" title="Linked Accounts" subtitle="Manage carriers, email, media, and knowledge services" onPress={() => navigate('Connections')} />
-        <MenuRow icon="cube-outline" title="Delivery Setup" subtitle="Connect carriers and manage tracking history" onPress={() => navigate('Delivery')} />
-        <MenuRow icon="mail-outline" title="Email Setup" subtitle="Link inbox providers and extract tracking numbers" onPress={() => navigate('Email')} />
+        <Text style={styles.sectionTitle}>Account Setup</Text>
+        <MenuRow icon="link-outline" title="Linked Accounts" subtitle="Connect or disconnect providers in one place" onPress={() => navigate('Connections')} />
       </View>
     </View>
   );

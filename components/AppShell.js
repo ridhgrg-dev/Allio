@@ -15,20 +15,19 @@ export default function AppShell({ navigation, children }) {
       {children}
       <AppPanel
         visible={menuVisible}
-        title="Menu"
-        subtitle="Move around Allio without returning to the dashboard."
+        title="Navigation"
+        subtitle="Jump to the part of Allio you want to use."
         onClose={() => setMenuVisible(false)}
       >
         <MenuPanelContent
           navigation={navigation}
           onClose={() => setMenuVisible(false)}
-          onOpenSettings={() => setSettingsVisible(true)}
         />
       </AppPanel>
       <AppPanel
         visible={settingsVisible}
         title="Settings"
-        subtitle="Backend setup, linked accounts, and service preferences."
+        subtitle="Backend setup and account-linking preferences."
         onClose={() => setSettingsVisible(false)}
       >
         <SettingsPanelContent navigation={navigation} onClose={() => setSettingsVisible(false)} />

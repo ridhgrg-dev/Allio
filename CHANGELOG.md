@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.8.1 - 2026-05-05
+
+- Centralized Home dashboard and hamburger navigation metadata.
+- Renamed the hamburger panel to Navigation and removed the duplicate Settings row.
+- Simplified Settings so it focuses on backend setup and one Linked Accounts entry point.
+- Refined Home card copy to better match the current backend/account-linking flows.
+
 ## 1.8.0 - 2026-05-05
 
 - Upgraded Connected Services from prototype toggles to backend-aware account linking.
