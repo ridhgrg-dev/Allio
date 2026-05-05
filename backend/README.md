@@ -36,11 +36,19 @@ npm start
 
 Gmail is the first real OAuth-backed provider. Users never enter API keys, client IDs, or secrets. Allio's deployed backend must be configured with Google OAuth credentials through environment variables or a secure secret manager.
 
-Register these callback URLs with the providers:
+Configure these backend environment variables:
 
 ```text
-UPS:   http://192.168.8.142:4100/api/auth/ups/callback
-Gmail: http://192.168.8.142:4100/api/email/auth/gmail/callback
+GMAIL_CLIENT_ID=
+GMAIL_CLIENT_SECRET=
+GMAIL_AUTH_URL=https://accounts.google.com/o/oauth2/v2/auth
+GMAIL_TOKEN_URL=https://oauth2.googleapis.com/token
+```
+
+Register this callback URL in Google Cloud, using your deployed HTTPS backend domain:
+
+```text
+https://YOUR_BACKEND_DOMAIN/api/email/auth/gmail/callback
 ```
 
 Google does not allow raw LAN IP redirect URIs for real OAuth. Use a real HTTPS domain for production.

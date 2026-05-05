@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.12.1 - 2026-05-05
+
+- Added a first-class Gmail connection card directly in Settings.
+- Added direct Connect Gmail and Refresh Gmail Status actions.
+- Fixed Gmail Connect to use freshly fetched backend OAuth status before opening Google consent.
+- Clarified backend Gmail OAuth environment setup docs.
+
 ## 1.12.0 - 2026-05-05
 
 - Removed UPS/FedEx/USPS/DHL account linking from Account Setup for now.

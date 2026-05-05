@@ -4,7 +4,13 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import InputField from './InputField';
 import PrimaryButton from './PrimaryButton';
 import MenuRow from './MenuRow';
-import { checkBackendHealth, getBackendBaseUrl } from '../services/backendService';
+import {
+  checkBackendHealth,
+  getBackendBaseUrl,
+  loadBackendConnections,
+  loadBackendProviderStatus,
+  startEmailConnection,
+} from '../services/backendService';
 import { getOrCreateAllioUserId, saveBackendUrl } from '../services/storageService';
 
 export default function SettingsPanelContent({ navigation, onClose }) {
@@ -13,6 +19,11 @@ export default function SettingsPanelContent({ navigation, onClose }) {
   const [status, setStatus] = useState('Basic mode');
   const [message, setMessage] = useState('Real account linking needs the Allio backend.');
   const [checking, setChecking] = useState(false);
+  const [gmailStatus, setGmailStatus] = useState('Checking Gmail');
+  const [gmailMessage, setGmailMessage] = useState('Checking Gmail connection status...');
+  const [gmailConnected, setGmailConnected] = useState(false);
+  const [gmailConfigured, setGmailConfigured] = useState(false);
+  const [connectingGmail, setConnectingGmail] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -27,6 +38,8 @@ export default function SettingsPanelContent({ navigation, onClose }) {
         setBackendUrl(savedBackendUrl || '');
         setUserId(savedUserId);
       }
+
+      await refreshGmailStatus();
     }
 
     loadSettings();
@@ -35,6 +48,40 @@ export default function SettingsPanelContent({ navigation, onClose }) {
       mounted = false;
     };
   }, []);
+
+  async function refreshGmailStatus() {
+    try {
+      const [providerData, connectionData] = await Promise.all([
+        loadBackendProviderStatus(),
+        loadBackendConnections(),
+      ]);
+      const gmail = providerData.emailProviders.find((provider) => provider.id === 'gmail');
+      const connected = Boolean(connectionData.connections?.gmail);
+
+      setGmailConnected(connected);
+      setGmailConfigured(Boolean(gmail?.configured));
+
+      if (connected) {
+        setGmailStatus('Gmail connected');
+        setGmailMessage('Allio can scan Gmail shipping emails for tracking numbers.');
+        return { configured: Boolean(gmail?.configured), connected };
+      }
+
+      if (gmail?.configured) {
+        setGmailStatus('Gmail ready');
+        setGmailMessage('Tap Connect Gmail to open Google consent and grant read-only mail access.');
+        return { configured: true, connected };
+      }
+
+      setGmailStatus('Gmail not enabled');
+      setGmailMessage('Backend Google OAuth credentials are not configured yet. Once configured, users only sign in with Google.');
+      return { configured: false, connected };
+    } catch (err) {
+      setGmailStatus('Gmail unavailable');
+      setGmailMessage(err.message);
+      return { configured: false, connected: false };
+    }
+  }
 
   async function handleSaveBackendUrl() {
     const savedUrl = await saveBackendUrl(backendUrl);
@@ -52,6 +99,7 @@ export default function SettingsPanelContent({ navigation, onClose }) {
       const result = await checkBackendHealth();
       setStatus('Backend connected');
       setMessage(`${result.service || 'Allio backend'} is reachable.`);
+      await refreshGmailStatus();
     } catch (err) {
       setStatus('Backend unavailable');
       setMessage(err.message);
@@ -63,6 +111,35 @@ export default function SettingsPanelContent({ navigation, onClose }) {
   function navigate(route) {
     onClose();
     navigation.navigate(route);
+  }
+
+  async function handleConnectGmail() {
+    setConnectingGmail(true);
+
+    try {
+      const latest = await refreshGmailStatus();
+
+      if (!latest.configured) {
+        setGmailStatus('Gmail not enabled');
+        setGmailMessage('Allio backend needs Google OAuth credentials before users can open the Google consent screen.');
+        return;
+      }
+
+      if (latest.connected) {
+        setGmailStatus('Gmail connected');
+        setGmailMessage('Allio can scan Gmail shipping emails for tracking numbers.');
+        return;
+      }
+
+      await startEmailConnection('gmail');
+      setGmailStatus('Google consent opened');
+      setGmailMessage('Finish the Google sign-in flow, return to Allio, then refresh Gmail status.');
+    } catch (err) {
+      setGmailStatus('Gmail error');
+      setGmailMessage(err.message);
+    } finally {
+      setConnectingGmail(false);
+    }
   }
 
   return (
@@ -92,6 +169,18 @@ export default function SettingsPanelContent({ navigation, onClose }) {
         <PrimaryButton title={checking ? 'Testing...' : 'Test Connection'} onPress={handleTestBackend} disabled={checking} />
       </View>
 
+      <View style={styles.gmailCard}>
+        <View style={styles.statusHeader}>
+          <Ionicons name={gmailConnected ? 'mail' : 'logo-google'} size={20} color={gmailConnected ? '#14754c' : '#3155d4'} />
+          <Text style={styles.status}>{gmailStatus}</Text>
+        </View>
+        <Text style={styles.message}>{gmailMessage}</Text>
+        <View style={styles.actions}>
+          <PrimaryButton title={connectingGmail ? 'Opening Google...' : 'Connect Gmail'} onPress={handleConnectGmail} disabled={connectingGmail || gmailConnected} />
+          <PrimaryButton title="Refresh Gmail Status" onPress={refreshGmailStatus} />
+        </View>
+      </View>
+
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Account Setup</Text>
         <MenuRow icon="link-outline" title="Linked Accounts" subtitle="Connect or disconnect providers in one place" onPress={() => navigate('Connections')} />
@@ -109,6 +198,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#f7f8fb',
     padding: 14,
     gap: 5,
+  },
+  gmailCard: {
+    borderRadius: 18,
+    borderWidth: 1,
+    borderColor: '#dbe2f0',
+    backgroundColor: '#ffffff',
+    padding: 14,
+    gap: 10,
   },
   statusHeader: {
     flexDirection: 'row',
