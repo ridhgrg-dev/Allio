@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, Keyboard, StyleSheet, Text, View } from 'react-native';
-import AccountLinkPanel from '../components/AccountLinkPanel';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
-import useLinkedAccounts from '../hooks/useLinkedAccounts';
-import { serviceGroups } from '../services/accountLinkService';
 import { searchWikipedia } from '../services/wikipediaService';
 
 export default function WikipediaScreen() {
@@ -15,7 +12,6 @@ export default function WikipediaScreen() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSearch() {
     Keyboard.dismiss();
@@ -42,16 +38,10 @@ export default function WikipediaScreen() {
         icon="library-outline"
         accent="#3155d4"
         title="Search Knowledge"
-        description="Use live Wikipedia search now, and link a Wikimedia account for future saved reading and preferences."
+        description="Use live Wikipedia search for quick research and clean article summaries."
         stat="Live"
         statLabel="Wikipedia API"
       />
-      <AccountLinkPanel
-        group={serviceGroups.wikipedia}
-        linkedAccounts={linkedAccounts}
-        onToggleLinked={toggleLinked}
-      />
-      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.form}>
         <InputField
           label="Search Wikipedia"

@@ -1,15 +1,5 @@
 export const appSections = [
   {
-    title: 'Connected Services',
-    description: 'Manage the accounts Allio can link through the backend or prototype state.',
-    route: 'Connections',
-    accent: '#111827',
-    meta: 'Account hub',
-    label: 'Manage',
-    icon: 'link-outline',
-    menuSubtitle: 'Account linking and provider status',
-  },
-  {
     title: 'Delivery Tracking',
     description: 'Track packages manually, save favorites, and use linked carrier context.',
     route: 'Delivery',

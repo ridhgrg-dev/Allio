@@ -136,9 +136,9 @@ export default function ConnectionsScreen() {
   return (
     <ScreenContainer>
       <AppHeader
-        title="Connected Services"
+        title="Account Setup"
         tagline={`${connectedCount} linked to Allio`}
-        subtitle="Connect carrier and email accounts through the Allio backend. Other services stay as prototype links for now."
+        subtitle="Manage provider connections from Settings. Users connect by signing in with each provider when Allio backend support is available."
       />
       {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.backendCard}>

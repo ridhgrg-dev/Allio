@@ -1,13 +1,10 @@
 import React, { useState } from 'react';
 import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import AccountLinkPanel from '../components/AccountLinkPanel';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
-import useLinkedAccounts from '../hooks/useLinkedAccounts';
-import { serviceGroups } from '../services/accountLinkService';
 import { searchMovies } from '../services/movieService';
 
 export default function MovieScreen() {
@@ -15,7 +12,6 @@ export default function MovieScreen() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSearch() {
     Keyboard.dismiss();
@@ -42,16 +38,10 @@ export default function MovieScreen() {
         icon="film-outline"
         accent="#a855f7"
         title="Movies and TV"
-        description="Search the starter catalog and connect entertainment accounts for future watchlists and recommendations."
-        stat="5"
-        statLabel="media links"
+        description="Search the starter catalog and explore movie or TV details without account setup clutter."
+        stat="Mock"
+        statLabel="catalog"
       />
-      <AccountLinkPanel
-        group={serviceGroups.media}
-        linkedAccounts={linkedAccounts}
-        onToggleLinked={toggleLinked}
-      />
-      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.form}>
         <InputField
           label="Movie or TV title"

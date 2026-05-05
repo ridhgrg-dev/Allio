@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import AccountLinkPanel from '../components/AccountLinkPanel';
 import CarrierTrackingModeCard from '../components/CarrierTrackingModeCard';
 import DeliveryHistoryCard from '../components/DeliveryHistoryCard';
 import FeatureHero from '../components/FeatureHero';
@@ -10,7 +9,7 @@ import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
 import useLinkedAccounts from '../hooks/useLinkedAccounts';
 import { serviceGroups } from '../services/accountLinkService';
-import { startCarrierConnection, trackWithBackendCarrier } from '../services/backendService';
+import { trackWithBackendCarrier } from '../services/backendService';
 import { trackPackage } from '../services/deliveryService';
 import {
   loadDeliveryHistory,
@@ -26,7 +25,7 @@ export default function DeliveryScreen() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [selectedCarrierId, setSelectedCarrierId] = useState('');
-  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
+  const { linkedAccounts, linkError } = useLinkedAccounts();
 
   const favorites = useMemo(() => history.filter((item) => item.favorite), [history]);
   const linkedCarriers = useMemo(() => {
@@ -105,32 +104,15 @@ export default function DeliveryScreen() {
     await persistHistory(toggleShipmentFavorite(history, trackingNumberToToggle));
   }
 
-  async function handleOpenCarrier(provider) {
-    const openedBackend = await startCarrierConnection(provider.id);
-
-    if (openedBackend) {
-      setError(`${provider.name} setup opened. Return to Allio after completing sign in, then refresh linked accounts from Settings.`);
-      return true;
-    }
-
-    return false;
-  }
-
   return (
     <ScreenContainer>
       <FeatureHero
         icon="cube-outline"
         accent="#0f766e"
         title="Track Every Delivery"
-        description="Link carrier accounts for a future unified package inbox, or enter a tracking number manually today."
-        stat="4"
-        statLabel="carrier links"
-      />
-      <AccountLinkPanel
-        group={serviceGroups.delivery}
-        linkedAccounts={linkedAccounts}
-        onToggleLinked={toggleLinked}
-        onOpenProvider={handleOpenCarrier}
+        description="Enter a tracking number, save important shipments, and use linked carrier context managed from Settings."
+        stat="25"
+        statLabel="saved items"
       />
       {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <CarrierTrackingModeCard

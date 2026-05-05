@@ -1,14 +1,11 @@
 import React, { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, Text, View } from 'react-native';
-import AccountLinkPanel from '../components/AccountLinkPanel';
 import EmailMessageCard from '../components/EmailMessageCard';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ScreenContainer from '../components/ScreenContainer';
-import useLinkedAccounts from '../hooks/useLinkedAccounts';
-import { serviceGroups } from '../services/accountLinkService';
-import { loadBackendEmailInbox, startEmailConnection } from '../services/backendService';
+import { loadBackendEmailInbox } from '../services/backendService';
 import { trackPackage } from '../services/deliveryService';
 import { sendMockEmail } from '../services/emailService';
 import { loadDeliveryHistory, saveDeliveryHistory, upsertShipmentHistory } from '../services/storageService';
@@ -24,7 +21,6 @@ export default function EmailScreen() {
   const [loading, setLoading] = useState(false);
   const [syncingInbox, setSyncingInbox] = useState(false);
   const [messages, setMessages] = useState([]);
-  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSend() {
     Keyboard.dismiss();
@@ -40,17 +36,6 @@ export default function EmailScreen() {
     } finally {
       setLoading(false);
     }
-  }
-
-  async function handleOpenEmailProvider(provider) {
-    const openedBackend = await startEmailConnection(provider.id);
-
-    if (openedBackend) {
-      setConfirmation(`${provider.name} setup opened. Return to Allio after completing sign in, then check linked email again.`);
-      return true;
-    }
-
-    return false;
   }
 
   async function handleSyncInbox() {
@@ -92,17 +77,10 @@ export default function EmailScreen() {
         icon="mail-outline"
         accent="#ea580c"
         title="Email Composer"
-        description="Send a safe mock email now, and open real email provider sign-in for a future OAuth-backed inbox."
-        stat="4"
-        statLabel="email links"
+        description="Compose a message, check linked inbox signals, and save extracted tracking numbers."
+        stat="3"
+        statLabel="signal types"
       />
-      <AccountLinkPanel
-        group={serviceGroups.email}
-        linkedAccounts={linkedAccounts}
-        onToggleLinked={toggleLinked}
-        onOpenProvider={handleOpenEmailProvider}
-      />
-      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.inboxActions}>
         <PrimaryButton title={syncingInbox ? 'Checking Inbox...' : 'Check Linked Email'} onPress={handleSyncInbox} disabled={syncingInbox} />
       </View>

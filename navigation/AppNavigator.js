@@ -32,7 +32,7 @@ export default function AppNavigator() {
       <Stack.Screen name="Wikipedia" component={WikipediaScreen} options={{ title: 'Wikipedia Search' }} />
       <Stack.Screen name="Movies" component={MovieScreen} options={{ title: 'Movie/TV Search' }} />
       <Stack.Screen name="Email" component={EmailScreen} options={{ title: 'Email' }} />
-      <Stack.Screen name="Connections" component={ConnectionsScreen} options={{ title: 'Connected Services' }} />
+      <Stack.Screen name="Connections" component={ConnectionsScreen} options={{ title: 'Account Setup' }} />
     </Stack.Navigator>
   );
 }

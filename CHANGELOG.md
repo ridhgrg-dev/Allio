@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.10.1 - 2026-05-05
+
+- Removed Account Setup / Connected Services from Home dashboard cards and hamburger navigation.
+- Removed provider connection panels from Delivery, Email, Wikipedia, and Movie/TV feature screens.
+- Kept provider connection management reachable only from Settings.
+- Renamed the connection screen title to Account Setup.
+
 ## 1.10.0 - 2026-05-05
 
 - Removed user-facing OAuth credential setup from the mobile app.
