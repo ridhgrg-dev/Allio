@@ -30,7 +30,11 @@ function normalizeCredentialValue(value) {
   return trimmed || undefined;
 }
 
-export function mergeProviderCredentials(baseProviders, kind) {
+export function mergeProviderCredentials(baseProviders, kind, allowLocalOverrides = false) {
+  if (!allowLocalOverrides) {
+    return baseProviders;
+  }
+
   const credentials = readCredentialsFile()[kind] || {};
 
   return Object.fromEntries(
@@ -44,13 +48,14 @@ export function mergeProviderCredentials(baseProviders, kind) {
   );
 }
 
-export function listProviderCredentialStatus(baseProviders, kind) {
-  const providers = mergeProviderCredentials(baseProviders, kind);
+export function listProviderCredentialStatus(baseProviders, kind, allowLocalOverrides = false) {
+  const providers = mergeProviderCredentials(baseProviders, kind, allowLocalOverrides);
 
   return Object.entries(providers).map(([id, provider]) => ({
     id,
     name: provider.name,
     configured: Boolean(provider.clientId && provider.clientSecret && provider.authUrl && provider.tokenUrl),
+    mode: provider.clientId && provider.clientSecret ? 'oauth' : 'unconfigured',
     authUrl: provider.authUrl || null,
     tokenUrl: provider.tokenUrl || null,
     callbackUrl: provider.callbackUrl || null,

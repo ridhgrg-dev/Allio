@@ -158,12 +158,22 @@ async function handleRequest(req, res) {
     }
 
     if (req.method === 'GET' && path === '/setup') {
+      if (!config.allowDevOAuthSetup) {
+        sendJson(res, 404, { error: 'Developer OAuth setup is disabled.' });
+        return;
+      }
+
       sendHtml(res, 200, renderSetupPage(url));
       return;
     }
 
     const setupMatch = path.match(/^\/api\/setup\/(carriers|emailProviders)\/([^/]+)$/);
     if (req.method === 'POST' && setupMatch) {
+      if (!config.allowDevOAuthSetup) {
+        sendJson(res, 404, { error: 'Developer OAuth setup is disabled.' });
+        return;
+      }
+
       const form = await readForm(req);
       await saveProviderCredentials(setupMatch[1], setupMatch[2], form);
       redirect(res, `/setup?saved=${encodeURIComponent(setupMatch[2].toUpperCase())}`);
@@ -190,6 +200,11 @@ async function handleRequest(req, res) {
 
     const devConnectMatch = path.match(/^\/dev\/connect\/([^/]+)$/);
     if (req.method === 'GET' && devConnectMatch) {
+      if (!config.allowDevProviderLinks) {
+        sendJson(res, 404, { error: 'Developer provider linking is disabled.' });
+        return;
+      }
+
       const providerId = devConnectMatch[1];
       const state = url.searchParams.get('state');
       await completeOAuth(providerId, state, `dev-code-${providerId}`);
@@ -207,6 +222,11 @@ async function handleRequest(req, res) {
 
     const devEmailConnectMatch = path.match(/^\/dev\/email\/connect\/([^/]+)$/);
     if (req.method === 'GET' && devEmailConnectMatch) {
+      if (!config.allowDevProviderLinks) {
+        sendJson(res, 404, { error: 'Developer provider linking is disabled.' });
+        return;
+      }
+
       const providerId = devEmailConnectMatch[1];
       const state = url.searchParams.get('state');
       await completeEmailOAuth(providerId, state, `dev-email-code-${providerId}`);

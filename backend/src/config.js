@@ -23,6 +23,8 @@ export const config = {
   host: process.env.HOST || '127.0.0.1',
   appBaseUrl: process.env.APP_BASE_URL || `http://localhost:${process.env.PORT || 4100}`,
   mobileDeepLink: process.env.MOBILE_DEEP_LINK || 'allio://connect',
+  allowDevProviderLinks: process.env.ALLOW_DEV_PROVIDER_LINKS === 'true',
+  allowDevOAuthSetup: process.env.ALLOW_DEV_OAUTH_SETUP === 'true',
   providers: {
     ups: {
       name: 'UPS',

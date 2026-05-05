@@ -4,11 +4,11 @@ import { listProviderCredentialStatus, mergeProviderCredentials } from './provid
 import { consumeOAuthState, saveConnection, saveOAuthState } from './store.js';
 
 function getProviders() {
-  return mergeProviderCredentials(config.providers, 'carriers');
+  return mergeProviderCredentials(config.providers, 'carriers', config.allowDevOAuthSetup);
 }
 
 export function listCarriers() {
-  return listProviderCredentialStatus(config.providers, 'carriers');
+  return listProviderCredentialStatus(config.providers, 'carriers', config.allowDevOAuthSetup);
 }
 
 export async function createAuthStartUrl(providerId, userId) {
@@ -25,7 +25,11 @@ export async function createAuthStartUrl(providerId, userId) {
     createdAt: new Date().toISOString(),
   });
 
-  if (!provider.clientId || !provider.authUrl) {
+  if (!provider.clientId || !provider.clientSecret || !provider.authUrl || !provider.tokenUrl) {
+    if (!config.allowDevProviderLinks) {
+      throw new Error(`${provider.name} is not available yet. Allio needs production provider credentials before users can connect.`);
+    }
+
     return `${config.appBaseUrl}/dev/connect/${providerId}?state=${encodeURIComponent(state)}`;
   }
 

@@ -28,11 +28,11 @@ const devMessages = [
 ];
 
 export function listEmailProviders() {
-  return listProviderCredentialStatus(config.emailProviders, 'emailProviders');
+  return listProviderCredentialStatus(config.emailProviders, 'emailProviders', config.allowDevOAuthSetup);
 }
 
 export async function createEmailAuthStartUrl(providerId, userId) {
-  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders', config.allowDevOAuthSetup)[providerId];
 
   if (!provider) {
     throw new Error('Unknown email provider.');
@@ -46,7 +46,11 @@ export async function createEmailAuthStartUrl(providerId, userId) {
     createdAt: new Date().toISOString(),
   });
 
-  if (!provider.clientId || !provider.authUrl) {
+  if (!provider.clientId || !provider.clientSecret || !provider.authUrl || !provider.tokenUrl) {
+    if (!config.allowDevProviderLinks) {
+      throw new Error(`${provider.name} is not available yet. Allio needs production provider credentials before users can connect.`);
+    }
+
     return `${config.appBaseUrl}/dev/email/connect/${providerId}?state=${encodeURIComponent(state)}`;
   }
 
@@ -68,7 +72,7 @@ export async function completeEmailOAuth(providerId, state, code) {
     throw new Error('Invalid or expired email connection state.');
   }
 
-  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders', config.allowDevOAuthSetup)[providerId];
   const configured = Boolean(provider?.clientId && provider?.clientSecret && provider?.tokenUrl);
 
   const tokenRecord = configured
@@ -90,7 +94,7 @@ export async function completeEmailOAuth(providerId, state, code) {
 }
 
 async function exchangeEmailCodeForToken(providerId, code) {
-  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders', config.allowDevOAuthSetup)[providerId];
   const callbackUrl = `${config.appBaseUrl}/api/email/auth/${providerId}/callback`;
   const body = new URLSearchParams({
     client_id: provider.clientId,

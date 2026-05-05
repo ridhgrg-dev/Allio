@@ -34,13 +34,7 @@ npm start
 
 ## Current Provider State
 
-The OAuth endpoints are scaffolded. Add developer app credentials at:
-
-```text
-http://192.168.8.142:4100/setup
-```
-
-The setup page currently focuses on UPS and Gmail. If credentials are missing, the mobile app opens this setup page before starting a real account connection.
+The OAuth endpoints are scaffolded for production provider-owned login. Users never enter API keys, client IDs, or secrets. Allio's deployed backend must be configured with provider credentials through environment variables or a secure secret manager.
 
 Register these callback URLs with the providers:
 
@@ -49,7 +43,13 @@ UPS:   http://192.168.8.142:4100/api/auth/ups/callback
 Gmail: http://192.168.8.142:4100/api/email/auth/gmail/callback
 ```
 
-Google does not allow raw LAN IP redirect URIs for real OAuth. Use a real HTTPS URL/tunnel or localhost web testing for Gmail OAuth.
+Google does not allow raw LAN IP redirect URIs for real OAuth. Use a real HTTPS domain for production.
+
+For local developer-only testing, `/setup` and `/dev/connect/*` are disabled by default. Enable them only outside production:
+
+```bash
+ALLOW_DEV_OAUTH_SETUP=true ALLOW_DEV_PROVIDER_LINKS=true npm run dev
+```
 
 Before production:
 

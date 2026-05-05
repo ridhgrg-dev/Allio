@@ -49,13 +49,9 @@ EXPO_PUBLIC_ALLIO_API_URL=http://192.168.8.142:4100 npx expo start --clear
 
 The Expo app also defaults to `http://192.168.8.142:4100` for local development. You can override it anytime from Settings.
 
-To configure real UPS or Gmail OAuth credentials, open the backend setup page while the backend is running:
+In production, users never enter API keys, client IDs, or secrets. Allio's backend owns provider credentials, and users only tap Connect, sign in on the provider page, and return to Allio.
 
-```text
-http://192.168.8.142:4100/setup
-```
-
-UPS and Google require developer app credentials and registered callback URLs. For Gmail, Google does not accept raw LAN IP redirect URIs for real OAuth, so use a real HTTPS URL/tunnel or localhost web testing before production.
+UPS and Google require Allio to register developer apps and callback URLs before those Connect buttons become available. For Gmail, Google does not accept raw LAN IP redirect URIs for real OAuth, so production needs HTTPS on an approved domain.
 
 ## Structure
 

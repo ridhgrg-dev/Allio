@@ -9,7 +9,6 @@ import {
   disconnectBackendConnection,
   loadBackendConnections,
   loadBackendProviderStatus,
-  openBackendCredentialSetup,
   startCarrierConnection,
   startEmailConnection,
 } from '../services/backendService';
@@ -40,6 +39,7 @@ export default function ConnectionsScreen() {
       for (const carrier of statusData.carriers) {
         nextProviderStatus[carrier.id] = {
           configured: carrier.configured,
+          mode: carrier.mode,
           kind: 'carrier',
         };
       }
@@ -47,6 +47,7 @@ export default function ConnectionsScreen() {
       for (const emailProvider of statusData.emailProviders) {
         nextProviderStatus[emailProvider.id] = {
           configured: emailProvider.configured,
+          mode: emailProvider.mode,
           kind: 'email',
         };
       }
@@ -61,7 +62,7 @@ export default function ConnectionsScreen() {
 
       setProviderStatus(nextProviderStatus);
       await mergeLinked(nextLinkedAccounts);
-      setBackendMessage('Backend is connected. UPS, FedEx, USPS, DHL, Gmail, and Outlook can use backend linking.');
+      setBackendMessage('Backend is connected. Available providers can be linked with the provider sign-in page.');
     } catch (err) {
       setBackendError(err.message);
       setBackendMessage('Backend account linking is unavailable. Check Settings and make sure the backend server is running.');
@@ -94,8 +95,7 @@ export default function ConnectionsScreen() {
       }
 
       if (!status?.configured) {
-        await openBackendCredentialSetup();
-        setBackendMessage(`${provider.name} needs real OAuth credentials first. Add them in the setup page, then return and tap Refresh Linked Accounts.`);
+        setBackendMessage(`${provider.name} is not available yet. In production, Allio will enable this after backend provider approval and OAuth credentials are deployed. Users will only tap Connect and sign in.`);
         return;
       }
 
@@ -120,14 +120,14 @@ export default function ConnectionsScreen() {
 
     if (group.id === 'delivery') {
       return status?.configured
-        ? 'Real OAuth credentials are configured on the backend.'
-        : 'Backend is ready; carrier developer credentials are not configured yet, so this uses dev linking.';
+        ? 'Available. Sign in on the provider page to connect.'
+        : 'Coming soon. Allio needs provider approval before users can connect.';
     }
 
     if (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id)) {
       return status?.configured
-        ? 'Real OAuth credentials are configured on the backend.'
-        : 'Backend is ready; email app credentials are not configured yet, so this uses dev linking.';
+        ? 'Available. Sign in on the provider page to connect.'
+        : 'Coming soon. Allio needs provider approval before users can connect.';
     }
 
     return 'Prototype link state only until this provider gets backend support.';
@@ -145,10 +145,7 @@ export default function ConnectionsScreen() {
         <Text style={styles.backendTitle}>Backend Account Linking</Text>
         <Text style={styles.backendMessage}>{backendMessage}</Text>
         {backendError ? <Text style={styles.error}>{backendError}</Text> : null}
-        <View style={styles.backendActions}>
-          <PrimaryButton title="Open OAuth Setup" onPress={openBackendCredentialSetup} />
-          <PrimaryButton title={refreshing ? 'Refreshing...' : 'Refresh Linked Accounts'} onPress={refreshBackendState} disabled={refreshing} />
-        </View>
+        <PrimaryButton title={refreshing ? 'Refreshing...' : 'Refresh Linked Accounts'} onPress={refreshBackendState} disabled={refreshing} />
       </View>
 
       <View style={styles.stack}>
@@ -227,8 +224,5 @@ const styles = StyleSheet.create({
     color: '#5f6b7a',
     fontSize: 13,
     lineHeight: 19,
-  },
-  backendActions: {
-    gap: 10,
   },
 });

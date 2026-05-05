@@ -86,24 +86,6 @@ export async function startEmailConnection(providerId) {
   return true;
 }
 
-export async function openBackendCredentialSetup() {
-  const backendUrl = await getBackendBaseUrl();
-
-  if (!backendUrl) {
-    return false;
-  }
-
-  const url = `${backendUrl}/setup`;
-  const canOpen = await Linking.canOpenURL(url);
-
-  if (!canOpen) {
-    throw new Error('Unable to open Allio OAuth setup page.');
-  }
-
-  await Linking.openURL(url);
-  return true;
-}
-
 export async function loadBackendConnections() {
   const userId = await getOrCreateAllioUserId();
   return request(`/api/users/${encodeURIComponent(userId)}/connections`);

@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.10.0 - 2026-05-05
+
+- Removed user-facing OAuth credential setup from the mobile app.
+- Made provider developer setup and dev-link routes opt-in with backend environment flags.
+- Updated Linked Accounts to show unconfigured providers as coming soon instead of asking users for technical credentials.
+- Documented the production OAuth model: Allio owns provider credentials, users only sign in with providers.
+
 ## 1.9.0 - 2026-05-05
 
 - Added a local backend OAuth credential setup page at `/setup`.
