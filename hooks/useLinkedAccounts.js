@@ -29,12 +29,7 @@ export default function useLinkedAccounts() {
     };
   }, []);
 
-  async function toggleLinked(providerId) {
-    const nextAccounts = {
-      ...linkedAccounts,
-      [providerId]: !linkedAccounts[providerId],
-    };
-
+  async function persistLinked(nextAccounts) {
     setLinkedAccounts(nextAccounts);
     setLinkError('');
 
@@ -45,9 +40,28 @@ export default function useLinkedAccounts() {
     }
   }
 
+  async function toggleLinked(providerId) {
+    const nextAccounts = {
+      ...linkedAccounts,
+      [providerId]: !linkedAccounts[providerId],
+    };
+
+    await persistLinked(nextAccounts);
+  }
+
+  async function setLinked(providerId, value) {
+    const nextAccounts = {
+      ...linkedAccounts,
+      [providerId]: value,
+    };
+
+    await persistLinked(nextAccounts);
+  }
+
   return {
     linkedAccounts,
     toggleLinked,
+    setLinked,
     linkError,
   };
 }

@@ -8,6 +8,14 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.3.0 - 2026-05-04
+
+- Added a real AfterShip delivery account connector using an API key.
+- Added save, update, disconnect, and sync controls for AfterShip.
+- Added real tracking sync into Allio delivery history and favorites.
+- Added shared account-link setter so real provider status can be forced linked/unlinked.
+- Documented that prototype API keys are stored locally and should move to a backend before production.
+
 ## 1.2.1 - 2026-05-04
 
 - Added keyboard-aware screen layout so forms are not hidden while typing.

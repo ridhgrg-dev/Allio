@@ -15,6 +15,7 @@ export default function InputField({
   onSubmitEditing,
   blurOnSubmit,
   inputRef,
+  secureTextEntry = false,
 }) {
   return (
     <View style={styles.container}>
@@ -34,6 +35,7 @@ export default function InputField({
         returnKeyType={returnKeyType}
         onSubmitEditing={onSubmitEditing}
         blurOnSubmit={blurOnSubmit ?? !multiline}
+        secureTextEntry={secureTextEntry}
       />
     </View>
   );

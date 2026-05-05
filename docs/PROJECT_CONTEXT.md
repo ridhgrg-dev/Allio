@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.2.1`
+- Version: `1.3.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -23,6 +23,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Delivery tracking with mock tracking results.
 - Delivery tracking history and favorite tracking numbers.
 - Keyboard-aware forms and submit actions across search/tracking/email screens.
+- Real AfterShip API-key connector for delivery account sync.
 - Wikipedia search using the public Wikipedia REST endpoint.
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.
@@ -37,9 +38,9 @@ Keep paid or complex integrations mocked until the UI and user flow are validate
 - Email: mock now; later use OAuth for Gmail/Outlook.
 - Account linking: mock now; later use provider-specific OAuth/API setup.
 
-Provider sign-in links open real external account pages, but Allio does not yet receive OAuth callbacks, store tokens, sync data, or claim true backend account authorization.
+Provider sign-in links open real external account pages, but most providers do not yet have OAuth callback handling in Allio.
 
-Local persistence currently stores linked account booleans plus delivery history/favorites only. It does not store provider credentials.
+Local persistence currently stores linked account booleans plus delivery history/favorites. Version `1.3.0` also stores an AfterShip API key locally for prototype real delivery sync; move this secret to a backend before production distribution.
 
 ## Technical Notes
 

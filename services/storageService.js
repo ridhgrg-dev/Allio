@@ -3,6 +3,7 @@ import { initialLinkedAccounts } from './accountLinkService';
 
 const LINKED_ACCOUNTS_KEY = '@allio/linkedAccounts';
 const DELIVERY_HISTORY_KEY = '@allio/deliveryHistory';
+const DELIVERY_ACCOUNT_KEY = '@allio/deliveryAccount';
 
 async function readJson(key, fallback) {
   const value = await AsyncStorage.getItem(key);
@@ -69,4 +70,25 @@ export function toggleShipmentFavorite(history, trackingNumber) {
       favorite: !item.favorite,
     };
   });
+}
+
+export async function loadDeliveryAccount() {
+  return readJson(DELIVERY_ACCOUNT_KEY, {
+    provider: 'aftership',
+    apiKey: '',
+    connectedAt: null,
+  });
+}
+
+export async function saveDeliveryAccount(account) {
+  return writeJson(DELIVERY_ACCOUNT_KEY, account);
+}
+
+export async function clearDeliveryAccount() {
+  await AsyncStorage.removeItem(DELIVERY_ACCOUNT_KEY);
+  return {
+    provider: 'aftership',
+    apiKey: '',
+    connectedAt: null,
+  };
 }
