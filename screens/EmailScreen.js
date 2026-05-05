@@ -1,13 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import AccountLinkPanel from '../components/AccountLinkPanel';
+import EmailMessageCard from '../components/EmailMessageCard';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ScreenContainer from '../components/ScreenContainer';
 import useLinkedAccounts from '../hooks/useLinkedAccounts';
 import { serviceGroups } from '../services/accountLinkService';
+import { loadBackendEmailInbox, startEmailConnection } from '../services/backendService';
+import { trackPackage } from '../services/deliveryService';
 import { sendMockEmail } from '../services/emailService';
+import { loadDeliveryHistory, saveDeliveryHistory, upsertShipmentHistory } from '../services/storageService';
 
 export default function EmailScreen() {
   const subjectRef = useRef(null);
@@ -18,6 +22,8 @@ export default function EmailScreen() {
   const [error, setError] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
+  const [syncingInbox, setSyncingInbox] = useState(false);
+  const [messages, setMessages] = useState([]);
   const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSend() {
@@ -36,6 +42,50 @@ export default function EmailScreen() {
     }
   }
 
+  async function handleOpenEmailProvider(provider) {
+    const openedBackend = await startEmailConnection(provider.id);
+
+    if (openedBackend) {
+      await toggleLinked(provider.id);
+      return true;
+    }
+
+    return false;
+  }
+
+  async function handleSyncInbox() {
+    Keyboard.dismiss();
+    setError('');
+    setConfirmation('');
+    setSyncingInbox(true);
+
+    try {
+      const nextMessages = await loadBackendEmailInbox();
+      setMessages(nextMessages);
+      setConfirmation(`Checked ${nextMessages.length} email messages.`);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setSyncingInbox(false);
+    }
+  }
+
+  async function handleUseTracking(candidate) {
+    setError('');
+    setConfirmation('');
+
+    try {
+      const shipment = await trackPackage(candidate.trackingNumber, {
+        preferredCarrier: candidate.carrier,
+      });
+      const history = await loadDeliveryHistory();
+      await saveDeliveryHistory(upsertShipmentHistory(history, shipment));
+      setConfirmation(`${candidate.trackingNumber} saved to Delivery history.`);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   return (
     <ScreenContainer>
       <FeatureHero
@@ -50,8 +100,22 @@ export default function EmailScreen() {
         group={serviceGroups.email}
         linkedAccounts={linkedAccounts}
         onToggleLinked={toggleLinked}
+        onOpenProvider={handleOpenEmailProvider}
       />
       {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
+      <View style={styles.inboxActions}>
+        <PrimaryButton title={syncingInbox ? 'Checking Inbox...' : 'Check Linked Email'} onPress={handleSyncInbox} disabled={syncingInbox} />
+      </View>
+
+      {messages.length ? (
+        <View style={styles.inbox}>
+          <Text style={styles.sectionTitle}>Inbox Signals</Text>
+          {messages.map((message) => (
+            <EmailMessageCard key={message.id} message={message} onUseTracking={handleUseTracking} />
+          ))}
+        </View>
+      ) : null}
+
       <View style={styles.form}>
         <InputField
           label="Recipient"
@@ -95,6 +159,18 @@ const styles = StyleSheet.create({
   form: {
     gap: 14,
     marginBottom: 18,
+  },
+  inboxActions: {
+    marginBottom: 18,
+  },
+  inbox: {
+    gap: 10,
+    marginBottom: 22,
+  },
+  sectionTitle: {
+    color: '#111827',
+    fontSize: 18,
+    fontWeight: '900',
   },
   error: {
     color: '#b1432d',

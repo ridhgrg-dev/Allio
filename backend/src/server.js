@@ -2,6 +2,7 @@ import http from 'node:http';
 import { URL } from 'node:url';
 import { config } from './config.js';
 import { completeOAuth, createAuthStartUrl, createTrackingResponse, listCarriers } from './carriers.js';
+import { completeEmailOAuth, createEmailAuthStartUrl, listEmailInbox, listEmailProviders } from './email.js';
 import { deleteConnection, listConnections } from './store.js';
 
 function sendJson(res, status, value) {
@@ -57,6 +58,11 @@ async function handleRequest(req, res) {
       return;
     }
 
+    if (req.method === 'GET' && path === '/api/email/providers') {
+      sendJson(res, 200, { providers: listEmailProviders() });
+      return;
+    }
+
     const authStartMatch = path.match(/^\/api\/auth\/([^/]+)\/start$/);
     if (req.method === 'GET' && authStartMatch) {
       const providerId = authStartMatch[1];
@@ -71,6 +77,33 @@ async function handleRequest(req, res) {
       const state = url.searchParams.get('state');
       await completeOAuth(providerId, state, `dev-code-${providerId}`);
       sendHtml(res, 200, `<h1>${providerId.toUpperCase()} connected</h1><p>You can return to Allio.</p>`);
+      return;
+    }
+
+    const emailAuthStartMatch = path.match(/^\/api\/email\/auth\/([^/]+)\/start$/);
+    if (req.method === 'GET' && emailAuthStartMatch) {
+      const providerId = emailAuthStartMatch[1];
+      const userId = getUserId(url);
+      redirect(res, await createEmailAuthStartUrl(providerId, userId));
+      return;
+    }
+
+    const devEmailConnectMatch = path.match(/^\/dev\/email\/connect\/([^/]+)$/);
+    if (req.method === 'GET' && devEmailConnectMatch) {
+      const providerId = devEmailConnectMatch[1];
+      const state = url.searchParams.get('state');
+      await completeEmailOAuth(providerId, state, `dev-email-code-${providerId}`);
+      sendHtml(res, 200, `<h1>${providerId.toUpperCase()} email connected</h1><p>You can return to Allio.</p>`);
+      return;
+    }
+
+    const emailCallbackMatch = path.match(/^\/api\/email\/auth\/([^/]+)\/callback$/);
+    if (req.method === 'GET' && emailCallbackMatch) {
+      const providerId = emailCallbackMatch[1];
+      const state = url.searchParams.get('state');
+      const code = url.searchParams.get('code');
+      await completeEmailOAuth(providerId, state, code);
+      redirect(res, `${config.mobileDeepLink}?provider=${encodeURIComponent(providerId)}&kind=email&status=connected`);
       return;
     }
 
@@ -111,6 +144,12 @@ async function handleRequest(req, res) {
       sendJson(res, 200, {
         shipment: createTrackingResponse(providerId, trackingNumber),
       });
+      return;
+    }
+
+    const emailInboxMatch = path.match(/^\/api\/users\/([^/]+)\/emails$/);
+    if (req.method === 'GET' && emailInboxMatch) {
+      sendJson(res, 200, { messages: await listEmailInbox(emailInboxMatch[1]) });
       return;
     }
 

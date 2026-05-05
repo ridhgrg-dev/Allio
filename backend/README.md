@@ -4,12 +4,12 @@ This backend is the foundation for real account linking.
 
 It does not ask users for carrier passwords or developer API keys. Instead, it prepares the correct production model:
 
-1. Allio registers an app with UPS/FedEx/USPS/DHL.
+1. Allio registers an app with UPS/FedEx/USPS/DHL and Gmail/Outlook.
 2. User taps Connect in the mobile app.
 3. Backend starts provider OAuth for that carrier.
 4. Carrier redirects back to `/api/auth/:provider/callback`.
 5. Backend stores provider tokens for that Allio user.
-6. Mobile app requests that user's carrier connections and tracking data from this backend.
+6. Mobile app requests that user's carrier/email connections, tracking data, and email inbox signals from this backend.
 
 ## Run
 
@@ -43,4 +43,6 @@ Before production:
 - Add authenticated Allio user accounts.
 - Add token refresh jobs.
 - Add carrier-specific tracking API adapters.
+- Add Gmail API and Microsoft Graph inbox adapters.
+- Encrypt stored access and refresh tokens.
 - Deploy over HTTPS.

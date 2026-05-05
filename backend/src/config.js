@@ -57,4 +57,22 @@ export const config = {
       scopes: ['tracking'],
     },
   },
+  emailProviders: {
+    gmail: {
+      name: 'Gmail',
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      authUrl: process.env.GMAIL_AUTH_URL,
+      tokenUrl: process.env.GMAIL_TOKEN_URL,
+      scopes: ['openid', 'email', 'https://www.googleapis.com/auth/gmail.readonly'],
+    },
+    outlook: {
+      name: 'Outlook',
+      clientId: process.env.OUTLOOK_CLIENT_ID,
+      clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
+      authUrl: process.env.OUTLOOK_AUTH_URL,
+      tokenUrl: process.env.OUTLOOK_TOKEN_URL,
+      scopes: ['openid', 'email', 'offline_access', 'Mail.Read'],
+    },
+  },
 };

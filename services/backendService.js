@@ -40,6 +40,24 @@ export async function startCarrierConnection(providerId) {
   return true;
 }
 
+export async function startEmailConnection(providerId) {
+  const userId = await getOrCreateAllioUserId();
+
+  if (!ALLIO_API_URL) {
+    return false;
+  }
+
+  const url = `${ALLIO_API_URL}/api/email/auth/${providerId}/start?userId=${encodeURIComponent(userId)}`;
+  const canOpen = await Linking.canOpenURL(url);
+
+  if (!canOpen) {
+    throw new Error('Unable to open Allio backend email connection page.');
+  }
+
+  await Linking.openURL(url);
+  return true;
+}
+
 export async function loadBackendConnections() {
   const userId = await getOrCreateAllioUserId();
   return request(`/api/users/${encodeURIComponent(userId)}/connections`);
@@ -53,4 +71,10 @@ export async function trackWithBackendCarrier(providerId, trackingNumber) {
   });
   const data = await request(`/api/users/${encodeURIComponent(userId)}/trackings?${params.toString()}`);
   return data.shipment;
+}
+
+export async function loadBackendEmailInbox() {
+  const userId = await getOrCreateAllioUserId();
+  const data = await request(`/api/users/${encodeURIComponent(userId)}/emails`);
+  return data.messages;
 }

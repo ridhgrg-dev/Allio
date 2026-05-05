@@ -13,7 +13,7 @@ Open the QR code with Expo Go on iOS or Android.
 
 ## Run With Backend
 
-The backend is optional for the current Expo Go prototype. It is needed for real user-scoped carrier account linking.
+The backend is optional for the current Expo Go prototype. It is needed for real user-scoped carrier and email account linking.
 
 ```bash
 cd backend
@@ -39,6 +39,7 @@ EXPO_PUBLIC_ALLIO_API_URL=http://YOUR_MAC_IP:4100 npx expo start --clear
 
 - Delivery tracking is mocked behind `services/deliveryService.js` for future AfterShip or EasyPost integration.
 - Direct carrier account linking uses the backend OAuth foundation in `backend/`.
+- Gmail/Outlook inbox checking uses the backend OAuth foundation in `backend/`.
 - Wikipedia search uses the public Wikipedia REST search endpoint.
 - Movie/TV search is mocked behind `services/movieService.js` for future TMDB or OMDb integration.
 - Email sending is mocked behind `services/emailService.js`; no Gmail API or background sync is included.

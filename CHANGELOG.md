@@ -8,6 +8,15 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.6.0 - 2026-05-05
+
+- Added backend email OAuth foundation for Gmail and Outlook.
+- Added user-scoped email connection routes and development email connection fallback.
+- Added linked email inbox endpoint.
+- Added tracking-number extraction for email subjects and bodies.
+- Added Email screen inbox checking for linked email accounts.
+- Added extracted tracking-number cards that save found numbers into Delivery history.
+
 ## 1.5.0 - 2026-05-05
 
 - Added a backend foundation for user-scoped carrier account linking.
