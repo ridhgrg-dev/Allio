@@ -3,6 +3,7 @@ import { URL } from 'node:url';
 import { config } from './config.js';
 import { completeOAuth, createAuthStartUrl, createTrackingResponse, listCarriers } from './carriers.js';
 import { completeEmailOAuth, createEmailAuthStartUrl, listEmailInbox, listEmailProviders } from './email.js';
+import { saveProviderCredentials } from './providerCredentials.js';
 import { deleteConnection, listConnections } from './store.js';
 
 function sendJson(res, status, value) {
@@ -28,6 +29,109 @@ function redirect(res, url) {
   res.end();
 }
 
+function escapeHtml(value) {
+  return String(value || '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;');
+}
+
+function readBody(req) {
+  return new Promise((resolve, reject) => {
+    let body = '';
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+    req.on('end', () => resolve(body));
+    req.on('error', reject);
+  });
+}
+
+async function readForm(req) {
+  const body = await readBody(req);
+  return Object.fromEntries(new URLSearchParams(body));
+}
+
+function renderCredentialCard({ provider, kind, callbackUrl, note }) {
+  return `
+    <section class="card">
+      <div>
+        <h2>${escapeHtml(provider.name)}</h2>
+        <p class="${provider.configured ? 'ok' : 'warn'}">${provider.configured ? 'Real OAuth credentials configured' : 'Needs client ID and secret'}</p>
+      </div>
+      <p class="small">Callback URL to register: <code>${escapeHtml(callbackUrl)}</code></p>
+      <p class="small">${escapeHtml(note)}</p>
+      <form method="post" action="/api/setup/${kind}/${provider.id}">
+        <label>Client ID<input name="clientId" autocomplete="off" /></label>
+        <label>Client Secret<input name="clientSecret" autocomplete="off" type="password" /></label>
+        <label>Authorization URL<input name="authUrl" value="${escapeHtml(provider.authUrl || '')}" /></label>
+        <label>Token URL<input name="tokenUrl" value="${escapeHtml(provider.tokenUrl || '')}" /></label>
+        <button type="submit">Save ${escapeHtml(provider.name)} Credentials</button>
+      </form>
+    </section>
+  `;
+}
+
+function renderSetupPage(url) {
+  const carriers = listCarriers().filter((provider) => provider.id === 'ups');
+  const emailProviders = listEmailProviders().filter((provider) => provider.id === 'gmail');
+  const saved = url.searchParams.get('saved');
+  const cards = [
+    ...carriers.map((provider) => renderCredentialCard({
+      provider,
+      kind: 'carriers',
+      callbackUrl: `${config.appBaseUrl}/api/auth/${provider.id}/callback`,
+      note: 'Create a UPS developer app and register this callback URL before connecting a real UPS account.',
+    })),
+    ...emailProviders.map((provider) => renderCredentialCard({
+      provider,
+      kind: 'emailProviders',
+      callbackUrl: `${config.appBaseUrl}/api/email/auth/${provider.id}/callback`,
+      note: 'Google OAuth redirect URIs must match exactly. Raw LAN IP redirect URIs are not accepted by Google; use HTTPS on a real domain/tunnel or localhost for local web testing.',
+    })),
+  ].join('');
+
+  return `
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Allio OAuth Setup</title>
+        <style>
+          body { margin: 0; background: #f7f8fb; color: #111827; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+          main { max-width: 760px; margin: 0 auto; padding: 24px; }
+          h1 { margin: 0 0 8px; font-size: 28px; }
+          p { color: #5f6b7a; line-height: 1.45; }
+          .notice, .card { border: 1px solid #e5e7eb; background: #fff; border-radius: 14px; padding: 16px; margin: 14px 0; }
+          .saved { color: #14754c; font-weight: 800; }
+          .ok { color: #14754c; font-weight: 800; }
+          .warn { color: #b45309; font-weight: 800; }
+          .small { font-size: 13px; }
+          code { background: #eef2ff; color: #273a89; padding: 2px 5px; border-radius: 5px; word-break: break-all; }
+          form { display: grid; gap: 10px; margin-top: 12px; }
+          label { display: grid; gap: 5px; font-size: 13px; font-weight: 800; }
+          input { min-height: 42px; border: 1px solid #d1d5db; border-radius: 8px; padding: 0 10px; font: inherit; }
+          button { min-height: 46px; border: 0; border-radius: 8px; background: #236c5e; color: #fff; font-weight: 900; }
+        </style>
+      </head>
+      <body>
+        <main>
+          <h1>Allio OAuth Setup</h1>
+          <p>Use this local backend page to add developer app credentials. After saving credentials, return to Allio and tap Refresh Linked Accounts, then Connect.</p>
+          ${saved ? `<p class="saved">${escapeHtml(saved)} credentials saved. Restart the Connect flow from Allio.</p>` : ''}
+          <div class="notice">
+            <strong>Important:</strong>
+            <p class="small">These are developer app credentials for Allio's backend, not your personal UPS or Gmail password. Users still sign in with UPS or Google in the provider's own OAuth page.</p>
+          </div>
+          ${cards}
+        </main>
+      </body>
+    </html>
+  `;
+}
+
 function getUserId(url) {
   const userId = url.searchParams.get('userId');
 
@@ -50,6 +154,19 @@ async function handleRequest(req, res) {
   try {
     if (req.method === 'GET' && path === '/health') {
       sendJson(res, 200, { ok: true, service: 'allio-backend' });
+      return;
+    }
+
+    if (req.method === 'GET' && path === '/setup') {
+      sendHtml(res, 200, renderSetupPage(url));
+      return;
+    }
+
+    const setupMatch = path.match(/^\/api\/setup\/(carriers|emailProviders)\/([^/]+)$/);
+    if (req.method === 'POST' && setupMatch) {
+      const form = await readForm(req);
+      await saveProviderCredentials(setupMatch[1], setupMatch[2], form);
+      redirect(res, `/setup?saved=${encodeURIComponent(setupMatch[2].toUpperCase())}`);
       return;
     }
 

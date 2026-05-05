@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.9.0 - 2026-05-05
+
+- Added a local backend OAuth credential setup page at `/setup`.
+- Added persisted backend credential overrides for UPS and Gmail developer app credentials.
+- Updated Linked Accounts so real UPS/Gmail Connect opens setup first when credentials are missing.
+- Added provider callback guidance for UPS and Gmail.
+
 ## 1.8.4 - 2026-05-05
 
 - Updated the local development backend URL to the current Mac IP `http://192.168.8.142:4100`.

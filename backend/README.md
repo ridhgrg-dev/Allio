@@ -34,7 +34,22 @@ npm start
 
 ## Current Provider State
 
-The OAuth endpoints are scaffolded. If provider credentials are missing, the backend uses a local dev connection flow so the mobile app can exercise user-specific connection records.
+The OAuth endpoints are scaffolded. Add developer app credentials at:
+
+```text
+http://192.168.8.142:4100/setup
+```
+
+The setup page currently focuses on UPS and Gmail. If credentials are missing, the mobile app opens this setup page before starting a real account connection.
+
+Register these callback URLs with the providers:
+
+```text
+UPS:   http://192.168.8.142:4100/api/auth/ups/callback
+Gmail: http://192.168.8.142:4100/api/email/auth/gmail/callback
+```
+
+Google does not allow raw LAN IP redirect URIs for real OAuth. Use a real HTTPS URL/tunnel or localhost web testing for Gmail OAuth.
 
 Before production:
 

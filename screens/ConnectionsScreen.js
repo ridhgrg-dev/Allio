@@ -9,6 +9,7 @@ import {
   disconnectBackendConnection,
   loadBackendConnections,
   loadBackendProviderStatus,
+  openBackendCredentialSetup,
   startCarrierConnection,
   startEmailConnection,
 } from '../services/backendService';
@@ -78,6 +79,7 @@ export default function ConnectionsScreen() {
 
     try {
       const supportsBackend = group.id === 'delivery' || (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id));
+      const status = providerStatus[provider.id];
 
       if (!supportsBackend) {
         await toggleLinked(provider.id);
@@ -88,6 +90,12 @@ export default function ConnectionsScreen() {
         await disconnectBackendConnection(provider.id);
         await setLinked(provider.id, false);
         setBackendMessage(`${provider.name} disconnected from Allio.`);
+        return;
+      }
+
+      if (!status?.configured) {
+        await openBackendCredentialSetup();
+        setBackendMessage(`${provider.name} needs real OAuth credentials first. Add them in the setup page, then return and tap Refresh Linked Accounts.`);
         return;
       }
 
@@ -137,7 +145,10 @@ export default function ConnectionsScreen() {
         <Text style={styles.backendTitle}>Backend Account Linking</Text>
         <Text style={styles.backendMessage}>{backendMessage}</Text>
         {backendError ? <Text style={styles.error}>{backendError}</Text> : null}
-        <PrimaryButton title={refreshing ? 'Refreshing...' : 'Refresh Linked Accounts'} onPress={refreshBackendState} disabled={refreshing} />
+        <View style={styles.backendActions}>
+          <PrimaryButton title="Open OAuth Setup" onPress={openBackendCredentialSetup} />
+          <PrimaryButton title={refreshing ? 'Refreshing...' : 'Refresh Linked Accounts'} onPress={refreshBackendState} disabled={refreshing} />
+        </View>
       </View>
 
       <View style={styles.stack}>
@@ -216,5 +227,8 @@ const styles = StyleSheet.create({
     color: '#5f6b7a',
     fontSize: 13,
     lineHeight: 19,
+  },
+  backendActions: {
+    gap: 10,
   },
 });

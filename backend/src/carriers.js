@@ -1,17 +1,18 @@
 import crypto from 'node:crypto';
 import { config } from './config.js';
+import { listProviderCredentialStatus, mergeProviderCredentials } from './providerCredentials.js';
 import { consumeOAuthState, saveConnection, saveOAuthState } from './store.js';
 
+function getProviders() {
+  return mergeProviderCredentials(config.providers, 'carriers');
+}
+
 export function listCarriers() {
-  return Object.entries(config.providers).map(([id, provider]) => ({
-    id,
-    name: provider.name,
-    configured: Boolean(provider.clientId && provider.clientSecret && provider.authUrl && provider.tokenUrl),
-  }));
+  return listProviderCredentialStatus(config.providers, 'carriers');
 }
 
 export async function createAuthStartUrl(providerId, userId) {
-  const provider = config.providers[providerId];
+  const provider = getProviders()[providerId];
 
   if (!provider) {
     throw new Error('Unknown carrier provider.');
@@ -49,7 +50,7 @@ export async function completeOAuth(providerId, state, code) {
     throw new Error('Invalid or expired connection state.');
   }
 
-  const provider = config.providers[providerId];
+  const provider = getProviders()[providerId];
   const configured = Boolean(provider?.clientId && provider?.clientSecret && provider?.tokenUrl);
 
   const tokenRecord = configured
@@ -70,7 +71,7 @@ export async function completeOAuth(providerId, state, code) {
 }
 
 async function exchangeCodeForToken(providerId, code) {
-  const provider = config.providers[providerId];
+  const provider = getProviders()[providerId];
   const callbackUrl = `${config.appBaseUrl}/api/auth/${providerId}/callback`;
   const body = new URLSearchParams({
     grant_type: 'authorization_code',
@@ -102,7 +103,7 @@ async function exchangeCodeForToken(providerId, code) {
 }
 
 export function createTrackingResponse(providerId, trackingNumber) {
-  const provider = config.providers[providerId];
+  const provider = getProviders()[providerId];
 
   return {
     trackingNumber,

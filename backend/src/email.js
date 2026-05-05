@@ -1,5 +1,6 @@
 import crypto from 'node:crypto';
 import { config } from './config.js';
+import { listProviderCredentialStatus, mergeProviderCredentials } from './providerCredentials.js';
 import { consumeOAuthState, listConnections, saveConnection, saveOAuthState } from './store.js';
 
 const devMessages = [
@@ -27,15 +28,11 @@ const devMessages = [
 ];
 
 export function listEmailProviders() {
-  return Object.entries(config.emailProviders).map(([id, provider]) => ({
-    id,
-    name: provider.name,
-    configured: Boolean(provider.clientId && provider.clientSecret && provider.authUrl && provider.tokenUrl),
-  }));
+  return listProviderCredentialStatus(config.emailProviders, 'emailProviders');
 }
 
 export async function createEmailAuthStartUrl(providerId, userId) {
-  const provider = config.emailProviders[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
 
   if (!provider) {
     throw new Error('Unknown email provider.');
@@ -71,7 +68,7 @@ export async function completeEmailOAuth(providerId, state, code) {
     throw new Error('Invalid or expired email connection state.');
   }
 
-  const provider = config.emailProviders[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
   const configured = Boolean(provider?.clientId && provider?.clientSecret && provider?.tokenUrl);
 
   const tokenRecord = configured
@@ -93,7 +90,7 @@ export async function completeEmailOAuth(providerId, state, code) {
 }
 
 async function exchangeEmailCodeForToken(providerId, code) {
-  const provider = config.emailProviders[providerId];
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders')[providerId];
   const callbackUrl = `${config.appBaseUrl}/api/email/auth/${providerId}/callback`;
   const body = new URLSearchParams({
     client_id: provider.clientId,

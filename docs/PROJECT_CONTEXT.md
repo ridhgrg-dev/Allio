@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.8.4`
+- Version: `1.9.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -63,6 +63,8 @@ Version `1.8.3` updates the local backend dev script and backend env examples to
 
 Version `1.8.4` updates the local backend URL to the current Mac IP `http://192.168.8.142:4100` and treats the previous `192.168.1.166` URL as retired so saved old settings do not keep breaking backend checks.
 
+Version `1.9.0` adds a backend OAuth credential setup page and changes Linked Accounts so UPS/Gmail Connect opens setup when real provider developer credentials are missing instead of silently using dev-link mode.
+
 ## Technical Notes
 
 - Must run in Expo Go.
@@ -91,6 +93,12 @@ Run backend locally:
 
 ```bash
 npm run backend:dev
+```
+
+Open real OAuth credential setup:
+
+```text
+http://192.168.8.142:4100/setup
 ```
 
 ## Git Practice

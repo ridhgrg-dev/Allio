@@ -28,8 +28,8 @@ export const config = {
       name: 'UPS',
       clientId: process.env.UPS_CLIENT_ID,
       clientSecret: process.env.UPS_CLIENT_SECRET,
-      authUrl: process.env.UPS_AUTH_URL,
-      tokenUrl: process.env.UPS_TOKEN_URL,
+      authUrl: process.env.UPS_AUTH_URL || 'https://wwwcie.ups.com/security/v1/oauth/authorize',
+      tokenUrl: process.env.UPS_TOKEN_URL || 'https://wwwcie.ups.com/security/v1/oauth/token',
       scopes: ['tracking'],
     },
     fedex: {
@@ -62,8 +62,8 @@ export const config = {
       name: 'Gmail',
       clientId: process.env.GMAIL_CLIENT_ID,
       clientSecret: process.env.GMAIL_CLIENT_SECRET,
-      authUrl: process.env.GMAIL_AUTH_URL,
-      tokenUrl: process.env.GMAIL_TOKEN_URL,
+      authUrl: process.env.GMAIL_AUTH_URL || 'https://accounts.google.com/o/oauth2/v2/auth',
+      tokenUrl: process.env.GMAIL_TOKEN_URL || 'https://oauth2.googleapis.com/token',
       scopes: ['openid', 'email', 'https://www.googleapis.com/auth/gmail.readonly'],
     },
     outlook: {
