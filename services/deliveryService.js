@@ -16,8 +16,6 @@ const mockUpdates = [
   },
 ];
 
-const AFTERSHIP_TRACKINGS_URL = 'https://api.aftership.com/tracking/2024-07/trackings';
-
 function normalizeTrackingNumber(trackingNumber) {
   return String(trackingNumber || '')
     .trim()
@@ -26,33 +24,7 @@ function normalizeTrackingNumber(trackingNumber) {
     .toUpperCase();
 }
 
-function mapAfterShipTracking(item) {
-  const trackingNumber = item.tracking_number || item.trackingNumber || item.id || 'UNKNOWN';
-  const checkpoints = item.checkpoints || item.tracking?.checkpoints || [];
-  const latestCheckpoint = checkpoints[checkpoints.length - 1];
-
-  return {
-    trackingNumber,
-    carrier: item.slug || item.courier || item.courier_name || 'AfterShip',
-    status: item.tag || item.subtag_message || item.delivery_status || 'Tracking',
-    estimatedDelivery: item.expected_delivery || item.estimated_delivery_date || 'Not available',
-    updates: checkpoints.length
-      ? checkpoints.slice(-5).reverse().map((checkpoint) => ({
-          time: checkpoint.checkpoint_time || checkpoint.created_at || 'Recent update',
-          location: checkpoint.location || checkpoint.city || 'Carrier network',
-          detail: checkpoint.message || checkpoint.checkpoint_message || checkpoint.tag || 'Shipment update received.',
-        }))
-      : [
-          {
-            time: latestCheckpoint?.checkpoint_time || 'Synced now',
-            location: latestCheckpoint?.location || 'AfterShip',
-            detail: latestCheckpoint?.message || 'Tracking exists in your AfterShip account.',
-          },
-        ],
-  };
-}
-
-export async function trackPackage(trackingNumber) {
+export async function trackPackage(trackingNumber, options = {}) {
   const normalized = normalizeTrackingNumber(trackingNumber);
 
   if (!normalized) {
@@ -71,38 +43,9 @@ export async function trackPackage(trackingNumber) {
   // into this stable app-level shape.
   return {
     trackingNumber: normalized,
-    carrier: 'Allio Mock Carrier',
+    carrier: options.preferredCarrier || 'Linked carrier account',
     status: 'In transit',
     estimatedDelivery: 'May 8, 2026',
     updates: mockUpdates,
   };
-}
-
-export async function syncAfterShipTrackings(apiKey) {
-  const trimmedKey = String(apiKey || '').trim();
-
-  if (!trimmedKey) {
-    throw new Error('Add an AfterShip API key first.');
-  }
-
-  const response = await fetch(`${AFTERSHIP_TRACKINGS_URL}?limit=10`, {
-    method: 'GET',
-    headers: {
-      'as-api-key': trimmedKey,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error('AfterShip sync failed. Check your API key and tracking permissions.');
-  }
-
-  const data = await response.json();
-  const rawTrackings = data.data?.trackings || data.trackings || data.data || [];
-
-  if (!Array.isArray(rawTrackings)) {
-    throw new Error('AfterShip returned an unexpected response.');
-  }
-
-  return rawTrackings.map(mapAfterShipTracking);
 }

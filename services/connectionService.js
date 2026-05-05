@@ -7,8 +7,6 @@ export const connectionGroups = [
     description: 'Prepare Allio to unify package updates from carriers and shipment APIs.',
     providers: [
       ...serviceGroups.delivery.providers.map((provider) => ({ ...provider, status: 'available' })),
-      { id: 'aftership', name: 'AfterShip', status: 'planned' },
-      { id: 'easypost', name: 'EasyPost', status: 'planned' },
     ],
   },
   {

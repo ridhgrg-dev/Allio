@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.3.0`
+- Version: `1.4.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -23,7 +23,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Delivery tracking with mock tracking results.
 - Delivery tracking history and favorite tracking numbers.
 - Keyboard-aware forms and submit actions across search/tracking/email screens.
-- Real AfterShip API-key connector for delivery account sync.
+- Direct carrier account linking UX for UPS, FedEx, USPS, and DHL.
 - Wikipedia search using the public Wikipedia REST endpoint.
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.
@@ -32,7 +32,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 Keep paid or complex integrations mocked until the UI and user flow are validated.
 
-- Delivery: mock now; later consider AfterShip or EasyPost.
+- Delivery: direct carrier account UX now; later add real UPS/FedEx/USPS/DHL OAuth through a backend.
 - Wikipedia: real public search now; later add account-aware features if useful.
 - Movie/TV: mock now; later use TMDB through a backend proxy.
 - Email: mock now; later use OAuth for Gmail/Outlook.
@@ -40,7 +40,7 @@ Keep paid or complex integrations mocked until the UI and user flow are validate
 
 Provider sign-in links open real external account pages, but most providers do not yet have OAuth callback handling in Allio.
 
-Local persistence currently stores linked account booleans plus delivery history/favorites. Version `1.3.0` also stores an AfterShip API key locally for prototype real delivery sync; move this secret to a backend before production distribution.
+Local persistence currently stores linked account booleans plus delivery history/favorites. Do not ask users for carrier passwords or developer API keys. True direct carrier sync should use carrier OAuth/API app registration with a backend token exchange.
 
 ## Technical Notes
 

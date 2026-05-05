@@ -8,6 +8,14 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.4.0 - 2026-05-04
+
+- Removed the AfterShip API-key connector from the user-facing delivery flow.
+- Shifted delivery toward simple direct carrier account linking for UPS, FedEx, USPS, and DHL.
+- Added a linked-carrier tracking mode selector.
+- Kept tracking history and favorites working with the selected linked carrier context.
+- Documented that true direct carrier sync requires carrier OAuth/API app registration and a backend token exchange.
+
 ## 1.3.0 - 2026-05-04
 
 - Added a real AfterShip delivery account connector using an API key.
