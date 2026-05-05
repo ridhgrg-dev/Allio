@@ -6,7 +6,8 @@ import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
-import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
+import useLinkedAccounts from '../hooks/useLinkedAccounts';
+import { serviceGroups } from '../services/accountLinkService';
 import { searchMovies } from '../services/movieService';
 
 export default function MovieScreen() {
@@ -14,14 +15,7 @@ export default function MovieScreen() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
-
-  function toggleLinked(providerId) {
-    setLinkedAccounts((current) => ({
-      ...current,
-      [providerId]: !current[providerId],
-    }));
-  }
+  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSearch() {
     setError('');
@@ -56,6 +50,7 @@ export default function MovieScreen() {
         linkedAccounts={linkedAccounts}
         onToggleLinked={toggleLinked}
       />
+      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.form}>
         <InputField
           label="Movie or TV title"

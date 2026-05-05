@@ -8,6 +8,14 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.2.0 - 2026-05-04
+
+- Added on-device persistence for linked provider accounts with AsyncStorage.
+- Added delivery tracking history that persists across app restarts.
+- Added favorite tracking numbers for future tracking.
+- Added Favorites and History sections to Delivery Tracking.
+- Added reusable delivery history cards with favorite toggles and quick re-track actions.
+
 ## 1.1.0 - 2026-05-04
 
 - Added icon-led modern feature heroes to Delivery, Wikipedia, Movie/TV, and Email screens.

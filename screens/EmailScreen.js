@@ -5,7 +5,8 @@ import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ScreenContainer from '../components/ScreenContainer';
-import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
+import useLinkedAccounts from '../hooks/useLinkedAccounts';
+import { serviceGroups } from '../services/accountLinkService';
 import { sendMockEmail } from '../services/emailService';
 
 export default function EmailScreen() {
@@ -15,14 +16,7 @@ export default function EmailScreen() {
   const [error, setError] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
-  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
-
-  function toggleLinked(providerId) {
-    setLinkedAccounts((current) => ({
-      ...current,
-      [providerId]: !current[providerId],
-    }));
-  }
+  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSend() {
     setError('');
@@ -54,6 +48,7 @@ export default function EmailScreen() {
         linkedAccounts={linkedAccounts}
         onToggleLinked={toggleLinked}
       />
+      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.form}>
         <InputField
           label="Recipient"

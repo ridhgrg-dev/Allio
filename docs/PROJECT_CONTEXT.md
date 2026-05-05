@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.1.0`
+- Version: `1.2.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -18,8 +18,10 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Home dashboard with modern command-center cards.
 - Connected Services hub with mock link/unlink controls.
 - Real external provider sign-in launchers from every account-link section.
+- Persistent linked account state with AsyncStorage.
 - Icon-led feature heroes for each major section.
 - Delivery tracking with mock tracking results.
+- Delivery tracking history and favorite tracking numbers.
 - Wikipedia search using the public Wikipedia REST endpoint.
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.
@@ -35,6 +37,8 @@ Keep paid or complex integrations mocked until the UI and user flow are validate
 - Account linking: mock now; later use provider-specific OAuth/API setup.
 
 Provider sign-in links open real external account pages, but Allio does not yet receive OAuth callbacks, store tokens, sync data, or claim true backend account authorization.
+
+Local persistence currently stores linked account booleans plus delivery history/favorites only. It does not store provider credentials.
 
 ## Technical Notes
 

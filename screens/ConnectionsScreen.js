@@ -1,23 +1,17 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AppHeader from '../components/AppHeader';
 import ScreenContainer from '../components/ScreenContainer';
 import ServiceConnectionCard from '../components/ServiceConnectionCard';
-import { connectionGroups, createInitialConnections } from '../services/connectionService';
+import useLinkedAccounts from '../hooks/useLinkedAccounts';
+import { connectionGroups } from '../services/connectionService';
 
 export default function ConnectionsScreen() {
-  const [connections, setConnections] = useState(createInitialConnections);
+  const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   const connectedCount = useMemo(() => {
-    return Object.values(connections).filter(Boolean).length;
-  }, [connections]);
-
-  function toggleConnection(providerId) {
-    setConnections((current) => ({
-      ...current,
-      [providerId]: !current[providerId],
-    }));
-  }
+    return Object.values(linkedAccounts).filter(Boolean).length;
+  }, [linkedAccounts]);
 
   return (
     <ScreenContainer>
@@ -26,6 +20,7 @@ export default function ConnectionsScreen() {
         tagline={`${connectedCount} linked for the prototype`}
         subtitle="Linking is mocked for now. The UI is ready for OAuth, carrier APIs, and provider-specific account setup later."
       />
+      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
 
       <View style={styles.stack}>
         {connectionGroups.map((group) => (
@@ -40,9 +35,9 @@ export default function ConnectionsScreen() {
                   key={provider.id}
                   name={provider.name}
                   status={provider.status}
-                  connected={Boolean(connections[provider.id])}
+                  connected={Boolean(linkedAccounts[provider.id])}
                   provider={provider}
-                  onToggle={() => toggleConnection(provider.id)}
+                  onToggle={() => toggleLinked(provider.id)}
                 />
               ))}
             </View>
@@ -75,5 +70,11 @@ const styles = StyleSheet.create({
   },
   providers: {
     gap: 10,
+  },
+  error: {
+    color: '#b1432d',
+    fontSize: 14,
+    fontWeight: '700',
+    marginBottom: 12,
   },
 });
