@@ -1,0 +1,25 @@
+# Changelog
+
+All notable changes to Allio are tracked here.
+
+The project uses semantic versioning:
+
+- Patch: documentation, polish, small fixes, dependency pinning.
+- Minor: new screens, new mocked flows, meaningful UI/UX additions.
+- Major: breaking navigation/data model changes or production API architecture changes.
+
+## 1.0.1 - 2026-05-04
+
+- Added production-style project tracking docs.
+- Added release/version workflow guidance.
+- Added reusable verification scripts in `package.json`.
+- Updated app splash/adaptive icon background to match the modernized UI.
+
+## 1.0.0 - 2026-05-04
+
+- Built the Allio Expo Go MVP.
+- Added Home dashboard, Delivery Tracking, Wikipedia Search, Movie/TV Search, Email, and Connected Services screens.
+- Added mock connection hub for delivery services, Wikipedia/Wikimedia, movie/TV services, and email providers.
+- Kept delivery, media, email, and account linking mocked for MVP safety.
+- Used real public Wikipedia search.
+- Downgraded to Expo SDK 54 for App Store Expo Go compatibility.
