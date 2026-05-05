@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.6.0`
+- Version: `1.7.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -30,6 +30,8 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.
 - Email inbox checking with tracking-number extraction.
+- Hamburger-style app menu and Settings panel.
+- Runtime backend URL setup with backend health check.
 
 ## Integration Policy
 
@@ -46,6 +48,8 @@ Provider sign-in links open real external account pages, but most providers do n
 Local persistence currently stores linked account booleans plus delivery history/favorites. Do not ask users for carrier passwords or developer API keys. True direct carrier sync should use carrier OAuth/API app registration with the `backend/` token exchange foundation.
 
 When backend is available, set `EXPO_PUBLIC_ALLIO_API_URL` before starting Expo. On a physical phone, use the Mac LAN IP instead of `localhost`.
+
+Version `1.7.0` also supports setting the backend URL at runtime from the Settings panel; this is preferred for Expo Go testing.
 
 ## Technical Notes
 

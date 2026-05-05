@@ -46,7 +46,7 @@ export default function EmailScreen() {
     const openedBackend = await startEmailConnection(provider.id);
 
     if (openedBackend) {
-      await toggleLinked(provider.id);
+      setConfirmation(`${provider.name} setup opened. Return to Allio after completing sign in, then check linked email again.`);
       return true;
     }
 

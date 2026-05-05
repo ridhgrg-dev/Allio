@@ -2,7 +2,8 @@
   "expo": {
     "name": "Allio",
     "slug": "allio",
-    "version": "1.6.0",
+    "scheme": "allio",
+    "version": "1.7.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
     "splash": {

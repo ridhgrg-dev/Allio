@@ -1,19 +1,39 @@
 import { Linking } from 'react-native';
-import { getOrCreateAllioUserId } from './storageService';
+import { getOrCreateAllioUserId, loadBackendUrl } from './storageService';
 
-export const ALLIO_API_URL = process.env.EXPO_PUBLIC_ALLIO_API_URL || '';
+const ENV_ALLIO_API_URL = process.env.EXPO_PUBLIC_ALLIO_API_URL || '';
 
-export function isBackendConfigured() {
-  return Boolean(ALLIO_API_URL);
+export async function getBackendBaseUrl() {
+  const savedUrl = await loadBackendUrl();
+  return savedUrl || ENV_ALLIO_API_URL;
+}
+
+export async function isBackendConfigured() {
+  return Boolean(await getBackendBaseUrl());
 }
 
 async function request(path, options) {
-  if (!ALLIO_API_URL) {
+  const backendUrl = await getBackendBaseUrl();
+
+  if (!backendUrl) {
     throw new Error('Backend is not configured.');
   }
 
-  const response = await fetch(`${ALLIO_API_URL}${path}`, options);
-  const data = await response.json();
+  let response;
+
+  try {
+    response = await fetch(`${backendUrl}${path}`, options);
+  } catch (err) {
+    throw new Error('Allio backend is not reachable. Check the URL in Settings.');
+  }
+
+  let data;
+
+  try {
+    data = await response.json();
+  } catch (err) {
+    throw new Error('Allio backend returned an unreadable response.');
+  }
 
   if (!response.ok) {
     throw new Error(data.error || 'Allio backend request failed.');
@@ -24,12 +44,13 @@ async function request(path, options) {
 
 export async function startCarrierConnection(providerId) {
   const userId = await getOrCreateAllioUserId();
+  const backendUrl = await getBackendBaseUrl();
 
-  if (!ALLIO_API_URL) {
+  if (!backendUrl) {
     return false;
   }
 
-  const url = `${ALLIO_API_URL}/api/auth/${providerId}/start?userId=${encodeURIComponent(userId)}`;
+  const url = `${backendUrl}/api/auth/${providerId}/start?userId=${encodeURIComponent(userId)}`;
   const canOpen = await Linking.canOpenURL(url);
 
   if (!canOpen) {
@@ -42,12 +63,13 @@ export async function startCarrierConnection(providerId) {
 
 export async function startEmailConnection(providerId) {
   const userId = await getOrCreateAllioUserId();
+  const backendUrl = await getBackendBaseUrl();
 
-  if (!ALLIO_API_URL) {
+  if (!backendUrl) {
     return false;
   }
 
-  const url = `${ALLIO_API_URL}/api/email/auth/${providerId}/start?userId=${encodeURIComponent(userId)}`;
+  const url = `${backendUrl}/api/email/auth/${providerId}/start?userId=${encodeURIComponent(userId)}`;
   const canOpen = await Linking.canOpenURL(url);
 
   if (!canOpen) {
@@ -77,4 +99,8 @@ export async function loadBackendEmailInbox() {
   const userId = await getOrCreateAllioUserId();
   const data = await request(`/api/users/${encodeURIComponent(userId)}/emails`);
   return data.messages;
+}
+
+export async function checkBackendHealth() {
+  return request('/health');
 }

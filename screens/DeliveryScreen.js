@@ -109,7 +109,7 @@ export default function DeliveryScreen() {
     const openedBackend = await startCarrierConnection(provider.id);
 
     if (openedBackend) {
-      await toggleLinked(provider.id);
+      setError(`${provider.name} setup opened. Return to Allio after completing sign in, then refresh linked accounts from Settings.`);
       return true;
     }
 

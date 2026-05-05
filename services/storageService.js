@@ -4,6 +4,7 @@ import { initialLinkedAccounts } from './accountLinkService';
 const LINKED_ACCOUNTS_KEY = '@allio/linkedAccounts';
 const DELIVERY_HISTORY_KEY = '@allio/deliveryHistory';
 const ALLIO_USER_ID_KEY = '@allio/userId';
+const BACKEND_URL_KEY = '@allio/backendUrl';
 
 async function readJson(key, fallback) {
   const value = await AsyncStorage.getItem(key);
@@ -82,4 +83,20 @@ export async function getOrCreateAllioUserId() {
   const nextUserId = `user_${Date.now()}_${Math.random().toString(36).slice(2, 10)}`;
   await AsyncStorage.setItem(ALLIO_USER_ID_KEY, nextUserId);
   return nextUserId;
+}
+
+export async function loadBackendUrl() {
+  return AsyncStorage.getItem(BACKEND_URL_KEY);
+}
+
+export async function saveBackendUrl(url) {
+  const normalized = String(url || '').trim().replace(/\/+$/, '');
+
+  if (!normalized) {
+    await AsyncStorage.removeItem(BACKEND_URL_KEY);
+    return '';
+  }
+
+  await AsyncStorage.setItem(BACKEND_URL_KEY, normalized);
+  return normalized;
 }

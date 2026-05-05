@@ -2,6 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import AppCard from '../components/AppCard';
 import AppHeader from '../components/AppHeader';
+import AppShell from '../components/AppShell';
 import ScreenContainer from '../components/ScreenContainer';
 
 const categories = [
@@ -59,38 +60,40 @@ const categories = [
 export default function HomeScreen({ navigation }) {
   return (
     <ScreenContainer>
-      <View style={styles.hero}>
-        <AppHeader subtitle="A single mobile command center for the services you already use, starting with safe prototype links and focused utilities." />
-        <View style={styles.summaryRow}>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>4</Text>
-            <Text style={styles.summaryLabel}>service areas</Text>
-          </View>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>2</Text>
-            <Text style={styles.summaryLabel}>mock links</Text>
-          </View>
-          <View style={styles.summaryItem}>
-            <Text style={styles.summaryValue}>1</Text>
-            <Text style={styles.summaryLabel}>live API</Text>
+      <AppShell navigation={navigation}>
+        <View style={styles.hero}>
+          <AppHeader subtitle="A single mobile command center for the services you already use, starting with safe prototype links and focused utilities." />
+          <View style={styles.summaryRow}>
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryValue}>4</Text>
+              <Text style={styles.summaryLabel}>service areas</Text>
+            </View>
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryValue}>2</Text>
+              <Text style={styles.summaryLabel}>backend groups</Text>
+            </View>
+            <View style={styles.summaryItem}>
+              <Text style={styles.summaryValue}>1</Text>
+              <Text style={styles.summaryLabel}>live API</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.grid}>
-        {categories.map((category) => (
-          <AppCard
-            key={category.title}
-            title={category.title}
-            description={category.description}
-            accent={category.accent}
-            disabled={category.disabled}
-            label={category.label}
-            meta={category.meta}
-            icon={category.icon}
-            onPress={category.route ? () => navigation.navigate(category.route) : undefined}
-          />
-        ))}
-      </View>
+        <View style={styles.grid}>
+          {categories.map((category) => (
+            <AppCard
+              key={category.title}
+              title={category.title}
+              description={category.description}
+              accent={category.accent}
+              disabled={category.disabled}
+              label={category.label}
+              meta={category.meta}
+              icon={category.icon}
+              onPress={category.route ? () => navigation.navigate(category.route) : undefined}
+            />
+          ))}
+        </View>
+      </AppShell>
     </ScreenContainer>
   );
 }

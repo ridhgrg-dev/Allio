@@ -8,6 +8,15 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.7.0 - 2026-05-05
+
+- Added hamburger-style app menu from the Home dashboard.
+- Added Settings panel for backend URL setup, backend health checks, and account setup navigation.
+- Added runtime backend URL storage so Expo Go can configure backend without rebuilding.
+- Improved backend connection errors for unreachable or invalid backend responses.
+- Added `allio` app scheme for future OAuth/deep-link returns.
+- Stopped marking providers connected immediately after opening backend auth setup.
+
 ## 1.6.0 - 2026-05-05
 
 - Added backend email OAuth foundation for Gmail and Outlook.
