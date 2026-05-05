@@ -12,6 +12,7 @@ const categories = [
     accent: '#111827',
     meta: 'Account hub',
     label: 'Manage',
+    icon: 'link-outline',
   },
   {
     title: 'Delivery Tracking',
@@ -19,6 +20,7 @@ const categories = [
     route: 'Delivery',
     accent: '#0f766e',
     meta: '4 carrier options',
+    icon: 'cube-outline',
   },
   {
     title: 'Wikipedia Search',
@@ -26,6 +28,7 @@ const categories = [
     route: 'Wikipedia',
     accent: '#3155d4',
     meta: 'Real search',
+    icon: 'library-outline',
   },
   {
     title: 'Movie/TV Search',
@@ -33,6 +36,7 @@ const categories = [
     route: 'Movies',
     accent: '#a855f7',
     meta: 'Media hub',
+    icon: 'film-outline',
   },
   {
     title: 'Email (basic)',
@@ -40,6 +44,7 @@ const categories = [
     route: 'Email',
     accent: '#ea580c',
     meta: 'Mock send',
+    icon: 'mail-outline',
   },
   {
     title: 'Coming Soon',
@@ -47,6 +52,7 @@ const categories = [
     disabled: true,
     accent: '#94a3b8',
     meta: 'Roadmap',
+    icon: 'sparkles-outline',
   },
 ];
 
@@ -80,6 +86,7 @@ export default function HomeScreen({ navigation }) {
             disabled={category.disabled}
             label={category.label}
             meta={category.meta}
+            icon={category.icon}
             onPress={category.route ? () => navigation.navigate(category.route) : undefined}
           />
         ))}

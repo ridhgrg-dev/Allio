@@ -1,33 +1,56 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { openProviderSignIn } from '../services/accountLinkService';
 
-export default function ServiceConnectionCard({ name, status, connected, onToggle }) {
+export default function ServiceConnectionCard({ name, status, connected, onToggle, provider }) {
   const isPlanned = status === 'planned';
+
+  async function handleOpen() {
+    try {
+      if (provider?.url) {
+        await openProviderSignIn(provider);
+      }
+    } catch (err) {
+      // External provider links can fail if the device blocks the URL.
+    }
+  }
 
   return (
     <View style={styles.card}>
       <View style={[styles.logo, connected && styles.logoConnected]}>
-        <Text style={[styles.logoText, connected && styles.logoTextConnected]}>{name.slice(0, 1)}</Text>
+        {provider?.icon ? (
+          <Ionicons name={provider.icon} size={20} color={connected ? '#14754c' : '#3155d4'} />
+        ) : (
+          <Text style={[styles.logoText, connected && styles.logoTextConnected]}>{name.slice(0, 1)}</Text>
+        )}
       </View>
       <View style={styles.copy}>
         <Text style={styles.name}>{name}</Text>
         <Text style={styles.status}>{connected ? 'Connected' : isPlanned ? 'Roadmap' : 'Ready to link'}</Text>
       </View>
-      <Pressable
-        accessibilityRole="button"
-        disabled={isPlanned}
-        onPress={onToggle}
-        style={({ pressed }) => [
-          styles.button,
-          connected && styles.buttonConnected,
-          isPlanned && styles.buttonDisabled,
-          pressed && !isPlanned && styles.buttonPressed,
-        ]}
-      >
-        <Text style={[styles.buttonText, connected && styles.buttonTextConnected]}>
-          {connected ? 'Linked' : isPlanned ? 'Soon' : 'Link'}
-        </Text>
-      </Pressable>
+      <View style={styles.actions}>
+        {provider?.url ? (
+          <Pressable accessibilityRole="button" onPress={handleOpen} style={styles.iconButton}>
+            <Ionicons name="open-outline" size={16} color="#111827" />
+          </Pressable>
+        ) : null}
+        <Pressable
+          accessibilityRole="button"
+          disabled={isPlanned}
+          onPress={onToggle}
+          style={({ pressed }) => [
+            styles.button,
+            connected && styles.buttonConnected,
+            isPlanned && styles.buttonDisabled,
+            pressed && !isPlanned && styles.buttonPressed,
+          ]}
+        >
+          <Text style={[styles.buttonText, connected && styles.buttonTextConnected]}>
+            {connected ? 'Linked' : isPlanned ? 'Soon' : 'Link'}
+          </Text>
+        </Pressable>
+      </View>
     </View>
   );
 }
@@ -78,7 +101,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   button: {
-    minWidth: 72,
+    minWidth: 68,
     minHeight: 36,
     borderRadius: 18,
     backgroundColor: '#111827',
@@ -102,5 +125,18 @@ const styles = StyleSheet.create({
   },
   buttonTextConnected: {
     color: '#14754c',
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  iconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#f3f4f6',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

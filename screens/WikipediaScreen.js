@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import AccountLinkPanel from '../components/AccountLinkPanel';
+import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
+import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
 import { searchWikipedia } from '../services/wikipediaService';
 
 export default function WikipediaScreen() {
@@ -11,6 +14,14 @@ export default function WikipediaScreen() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
+
+  function toggleLinked(providerId) {
+    setLinkedAccounts((current) => ({
+      ...current,
+      [providerId]: !current[providerId],
+    }));
+  }
 
   async function handleSearch() {
     setError('');
@@ -32,6 +43,19 @@ export default function WikipediaScreen() {
 
   return (
     <ScreenContainer>
+      <FeatureHero
+        icon="library-outline"
+        accent="#3155d4"
+        title="Search Knowledge"
+        description="Use live Wikipedia search now, and link a Wikimedia account for future saved reading and preferences."
+        stat="Live"
+        statLabel="Wikipedia API"
+      />
+      <AccountLinkPanel
+        group={serviceGroups.wikipedia}
+        linkedAccounts={linkedAccounts}
+        onToggleLinked={toggleLinked}
+      />
       <View style={styles.form}>
         <InputField
           label="Search Wikipedia"

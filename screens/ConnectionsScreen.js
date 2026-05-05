@@ -41,6 +41,7 @@ export default function ConnectionsScreen() {
                   name={provider.name}
                   status={provider.status}
                   connected={Boolean(connections[provider.id])}
+                  provider={provider}
                   onToggle={() => toggleConnection(provider.id)}
                 />
               ))}

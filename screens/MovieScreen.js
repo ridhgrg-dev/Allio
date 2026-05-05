@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AccountLinkPanel from '../components/AccountLinkPanel';
+import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
+import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
 import { searchMovies } from '../services/movieService';
 
 export default function MovieScreen() {
@@ -11,6 +14,14 @@ export default function MovieScreen() {
   const [results, setResults] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
+
+  function toggleLinked(providerId) {
+    setLinkedAccounts((current) => ({
+      ...current,
+      [providerId]: !current[providerId],
+    }));
+  }
 
   async function handleSearch() {
     setError('');
@@ -32,6 +43,19 @@ export default function MovieScreen() {
 
   return (
     <ScreenContainer>
+      <FeatureHero
+        icon="film-outline"
+        accent="#a855f7"
+        title="Movies and TV"
+        description="Search the starter catalog and connect entertainment accounts for future watchlists and recommendations."
+        stat="5"
+        statLabel="media links"
+      />
+      <AccountLinkPanel
+        group={serviceGroups.media}
+        linkedAccounts={linkedAccounts}
+        onToggleLinked={toggleLinked}
+      />
       <View style={styles.form}>
         <InputField
           label="Movie or TV title"

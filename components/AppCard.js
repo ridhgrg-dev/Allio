@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function AppCard({
   title,
@@ -9,6 +10,7 @@ export default function AppCard({
   onPress,
   label = 'Open',
   meta,
+  icon,
 }) {
   return (
     <Pressable
@@ -22,14 +24,21 @@ export default function AppCard({
       ]}
     >
       <View style={[styles.accent, { backgroundColor: accent }]}>
-        <Text style={styles.accentText}>{title.slice(0, 1)}</Text>
+        {icon ? (
+          <Ionicons name={icon} size={24} color="#ffffff" />
+        ) : (
+          <Text style={styles.accentText}>{title.slice(0, 1)}</Text>
+        )}
       </View>
       <View style={styles.copy}>
         {meta ? <Text style={styles.meta}>{meta}</Text> : null}
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.description}>{description}</Text>
       </View>
-      <Text style={styles.arrow}>{disabled ? 'Soon' : label}</Text>
+      <View style={styles.arrowWrap}>
+        <Text style={styles.arrow}>{disabled ? 'Soon' : label}</Text>
+        {!disabled ? <Ionicons name="chevron-forward" size={16} color="#111827" /> : null}
+      </View>
     </Pressable>
   );
 }
@@ -89,5 +98,9 @@ const styles = StyleSheet.create({
     color: '#111827',
     fontSize: 13,
     fontWeight: '900',
+  },
+  arrowWrap: {
+    alignItems: 'center',
+    gap: 4,
   },
 });

@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AccountLinkPanel from '../components/AccountLinkPanel';
+import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
+import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
 import { trackPackage } from '../services/deliveryService';
 
 export default function DeliveryScreen() {
@@ -11,6 +14,14 @@ export default function DeliveryScreen() {
   const [shipment, setShipment] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
+
+  function toggleLinked(providerId) {
+    setLinkedAccounts((current) => ({
+      ...current,
+      [providerId]: !current[providerId],
+    }));
+  }
 
   async function handleTrack() {
     setError('');
@@ -29,6 +40,19 @@ export default function DeliveryScreen() {
 
   return (
     <ScreenContainer>
+      <FeatureHero
+        icon="cube-outline"
+        accent="#0f766e"
+        title="Track Every Delivery"
+        description="Link carrier accounts for a future unified package inbox, or enter a tracking number manually today."
+        stat="4"
+        statLabel="carrier links"
+      />
+      <AccountLinkPanel
+        group={serviceGroups.delivery}
+        linkedAccounts={linkedAccounts}
+        onToggleLinked={toggleLinked}
+      />
       <View style={styles.form}>
         <InputField
           label="Tracking number"
@@ -80,7 +104,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   sectionTitle: {
-    color: '#18201f',
+    color: '#111827',
     fontSize: 18,
     fontWeight: '800',
     marginTop: 6,

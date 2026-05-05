@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AccountLinkPanel from '../components/AccountLinkPanel';
+import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ScreenContainer from '../components/ScreenContainer';
+import { initialLinkedAccounts, serviceGroups } from '../services/accountLinkService';
 import { sendMockEmail } from '../services/emailService';
 
 export default function EmailScreen() {
@@ -12,6 +15,14 @@ export default function EmailScreen() {
   const [error, setError] = useState('');
   const [confirmation, setConfirmation] = useState('');
   const [loading, setLoading] = useState(false);
+  const [linkedAccounts, setLinkedAccounts] = useState(initialLinkedAccounts);
+
+  function toggleLinked(providerId) {
+    setLinkedAccounts((current) => ({
+      ...current,
+      [providerId]: !current[providerId],
+    }));
+  }
 
   async function handleSend() {
     setError('');
@@ -30,6 +41,19 @@ export default function EmailScreen() {
 
   return (
     <ScreenContainer>
+      <FeatureHero
+        icon="mail-outline"
+        accent="#ea580c"
+        title="Email Composer"
+        description="Send a safe mock email now, and open real email provider sign-in for a future OAuth-backed inbox."
+        stat="4"
+        statLabel="email links"
+      />
+      <AccountLinkPanel
+        group={serviceGroups.email}
+        linkedAccounts={linkedAccounts}
+        onToggleLinked={toggleLinked}
+      />
       <View style={styles.form}>
         <InputField
           label="Recipient"

@@ -8,6 +8,15 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.1.0 - 2026-05-04
+
+- Added icon-led modern feature heroes to Delivery, Wikipedia, Movie/TV, and Email screens.
+- Added reusable account-link panels to every major section.
+- Added real external provider sign-in launchers for delivery, Wikipedia/Wikimedia, movie/TV, and email providers.
+- Added in-app linked/unlinked state controls for provider setup prototypes.
+- Added Ionicons across dashboard cards and provider rows.
+- Kept OAuth/token storage out of the client until a backend is added.
+
 ## 1.0.1 - 2026-05-04
 
 - Added production-style project tracking docs.
