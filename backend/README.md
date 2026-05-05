@@ -34,7 +34,7 @@ npm start
 
 ## Current Provider State
 
-The OAuth endpoints are scaffolded for production provider-owned login. Users never enter API keys, client IDs, or secrets. Allio's deployed backend must be configured with provider credentials through environment variables or a secure secret manager.
+Gmail is the first real OAuth-backed provider. Users never enter API keys, client IDs, or secrets. Allio's deployed backend must be configured with Google OAuth credentials through environment variables or a secure secret manager.
 
 Register these callback URLs with the providers:
 
@@ -44,6 +44,14 @@ Gmail: http://192.168.8.142:4100/api/email/auth/gmail/callback
 ```
 
 Google does not allow raw LAN IP redirect URIs for real OAuth. Use a real HTTPS domain for production.
+
+Gmail API behavior:
+
+- User taps Connect Gmail in the mobile app.
+- Backend redirects to Google's OAuth consent screen.
+- Google redirects to `/api/email/auth/gmail/callback`.
+- Backend exchanges the code for access/refresh tokens.
+- `/api/users/:userId/emails` lists likely shipping emails with Gmail API and extracts tracking numbers.
 
 For local developer-only testing, `/setup` and `/dev/connect/*` are disabled by default. Enable them only outside production:
 

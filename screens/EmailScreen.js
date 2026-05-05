@@ -77,9 +77,9 @@ export default function EmailScreen() {
         icon="mail-outline"
         accent="#ea580c"
         title="Email Composer"
-        description="Compose a message, check linked inbox signals, and save extracted tracking numbers."
-        stat="3"
-        statLabel="signal types"
+        description="Check linked Gmail for shipping emails, extract tracking numbers, and save them to Delivery."
+        stat="Gmail"
+        statLabel="tracking scan"
       />
       <View style={styles.inboxActions}>
         <PrimaryButton title={syncingInbox ? 'Checking Inbox...' : 'Check Linked Email'} onPress={handleSyncInbox} disabled={syncingInbox} />

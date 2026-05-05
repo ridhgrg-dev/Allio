@@ -61,6 +61,22 @@ export async function saveConnection(userId, providerId, connection) {
   return connection;
 }
 
+export async function updateConnection(userId, providerId, patch) {
+  const db = await readDb();
+  const current = db.connections[userId]?.[providerId];
+
+  if (!current) {
+    return null;
+  }
+
+  db.connections[userId][providerId] = {
+    ...current,
+    ...patch,
+  };
+  await writeDb(db);
+  return db.connections[userId][providerId];
+}
+
 export async function listConnections(userId) {
   const db = await readDb();
   return db.connections[userId] || {};

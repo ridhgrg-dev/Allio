@@ -9,13 +9,12 @@ import {
   disconnectBackendConnection,
   loadBackendConnections,
   loadBackendProviderStatus,
-  startCarrierConnection,
   startEmailConnection,
 } from '../services/backendService';
 import { connectionGroups } from '../services/connectionService';
 
 export default function ConnectionsScreen() {
-  const { linkedAccounts, toggleLinked, setLinked, mergeLinked, linkError } = useLinkedAccounts();
+  const { linkedAccounts, setLinked, mergeLinked, linkError } = useLinkedAccounts();
   const [backendMessage, setBackendMessage] = useState('Checking backend account linking...');
   const [backendError, setBackendError] = useState('');
   const [providerStatus, setProviderStatus] = useState({});
@@ -79,11 +78,11 @@ export default function ConnectionsScreen() {
     setBackendError('');
 
     try {
-      const supportsBackend = group.id === 'delivery' || (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id));
+      const supportsBackend = provider.id === 'gmail';
       const status = providerStatus[provider.id];
 
       if (!supportsBackend) {
-        await toggleLinked(provider.id);
+        setBackendMessage(`${provider.name} is on the roadmap. Gmail is the first production account connection.`);
         return;
       }
 
@@ -99,9 +98,7 @@ export default function ConnectionsScreen() {
         return;
       }
 
-      const opened = group.id === 'delivery'
-        ? await startCarrierConnection(provider.id)
-        : await startEmailConnection(provider.id);
+      const opened = await startEmailConnection(provider.id);
 
       if (opened) {
         setBackendMessage(`${provider.name} connection opened. Finish the browser step, return to Allio, then tap Refresh Linked Accounts.`);
@@ -119,18 +116,20 @@ export default function ConnectionsScreen() {
     }
 
     if (group.id === 'delivery') {
-      return status?.configured
-        ? 'Available. Sign in on the provider page to connect.'
-        : 'Coming soon. Allio needs provider approval before users can connect.';
+      return 'Coming soon. Gmail tracking extraction is the first production account link.';
     }
 
     if (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id)) {
+      if (provider.id !== 'gmail') {
+        return 'Coming soon after Gmail account linking is stable.';
+      }
+
       return status?.configured
-        ? 'Available. Sign in on the provider page to connect.'
-        : 'Coming soon. Allio needs provider approval before users can connect.';
+        ? 'Available. Sign in with Google to let Allio read shipping emails.'
+        : 'Gmail OAuth is not configured on the backend yet.';
     }
 
-    return 'Prototype link state only until this provider gets backend support.';
+    return 'Coming soon after Gmail account linking is stable.';
   }
 
   return (
@@ -138,7 +137,7 @@ export default function ConnectionsScreen() {
       <AppHeader
         title="Account Setup"
         tagline={`${connectedCount} linked to Allio`}
-        subtitle="Manage provider connections from Settings. Users connect by signing in with each provider when Allio backend support is available."
+        subtitle="Connect Gmail first so Allio can read shipping emails and extract tracking numbers. More providers stay on the roadmap."
       />
       {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <View style={styles.backendCard}>
@@ -163,7 +162,7 @@ export default function ConnectionsScreen() {
                   status={provider.status}
                   connected={Boolean(linkedAccounts[provider.id])}
                   provider={provider}
-                  actionLabel={group.id === 'delivery' || (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id)) ? 'Connect' : 'Link'}
+                  actionLabel={provider.id === 'gmail' ? 'Connect' : 'Soon'}
                   helperText={getHelperText(group, provider)}
                   onOpen={() => handleProviderAction(group, provider)}
                   onToggle={() => handleProviderAction(group, provider)}

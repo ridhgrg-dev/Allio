@@ -46,10 +46,7 @@ export const serviceGroups = {
   },
 };
 
-export const initialLinkedAccounts = {
-  wikimedia: true,
-  tmdb: true,
-};
+export const initialLinkedAccounts = {};
 
 export async function openProviderSignIn(provider) {
   const canOpen = await Linking.canOpenURL(provider.url);

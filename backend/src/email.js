@@ -1,7 +1,7 @@
 import crypto from 'node:crypto';
 import { config } from './config.js';
 import { listProviderCredentialStatus, mergeProviderCredentials } from './providerCredentials.js';
-import { consumeOAuthState, listConnections, saveConnection, saveOAuthState } from './store.js';
+import { consumeOAuthState, listConnections, saveConnection, saveOAuthState, updateConnection } from './store.js';
 
 const devMessages = [
   {
@@ -61,6 +61,9 @@ export async function createEmailAuthStartUrl(providerId, userId) {
   authUrl.searchParams.set('redirect_uri', callbackUrl);
   authUrl.searchParams.set('state', state);
   authUrl.searchParams.set('scope', provider.scopes.join(' '));
+  authUrl.searchParams.set('access_type', 'offline');
+  authUrl.searchParams.set('prompt', 'consent');
+  authUrl.searchParams.set('include_granted_scopes', 'true');
 
   return authUrl.toString();
 }
@@ -151,6 +154,137 @@ export function extractTrackingNumbers(text) {
   return found;
 }
 
+function decodeBase64Url(value) {
+  if (!value) {
+    return '';
+  }
+
+  const normalized = value.replace(/-/g, '+').replace(/_/g, '/');
+  const padded = normalized.padEnd(normalized.length + ((4 - (normalized.length % 4)) % 4), '=');
+  return Buffer.from(padded, 'base64').toString('utf8');
+}
+
+function getHeader(headers, name) {
+  return headers.find((header) => header.name.toLowerCase() === name.toLowerCase())?.value || '';
+}
+
+function getPlainTextFromPayload(payload) {
+  if (!payload) {
+    return '';
+  }
+
+  if (payload.mimeType === 'text/plain' && payload.body?.data) {
+    return decodeBase64Url(payload.body.data);
+  }
+
+  if (payload.parts?.length) {
+    return payload.parts.map(getPlainTextFromPayload).filter(Boolean).join('\n');
+  }
+
+  return payload.body?.data ? decodeBase64Url(payload.body.data) : '';
+}
+
+function isTokenExpired(token) {
+  if (!token?.expiresAt) {
+    return false;
+  }
+
+  return new Date(token.expiresAt).getTime() <= Date.now() + 60 * 1000;
+}
+
+async function refreshGmailToken(userId, connection) {
+  if (!connection.token?.refreshToken) {
+    throw new Error('Gmail access expired. Disconnect Gmail and connect again.');
+  }
+
+  const provider = mergeProviderCredentials(config.emailProviders, 'emailProviders', config.allowDevOAuthSetup).gmail;
+  const body = new URLSearchParams({
+    client_id: provider.clientId,
+    client_secret: provider.clientSecret,
+    grant_type: 'refresh_token',
+    refresh_token: connection.token.refreshToken,
+  });
+
+  const response = await fetch(provider.tokenUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: body.toString(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Gmail token refresh failed. Disconnect Gmail and connect again.');
+  }
+
+  const refreshed = await response.json();
+  const nextToken = {
+    ...connection.token,
+    accessToken: refreshed.access_token,
+    expiresAt: refreshed.expires_in ? new Date(Date.now() + refreshed.expires_in * 1000).toISOString() : connection.token.expiresAt,
+  };
+
+  await updateConnection(userId, 'gmail', {
+    token: nextToken,
+  });
+
+  return nextToken;
+}
+
+async function getValidGmailAccessToken(userId, connection) {
+  if (isTokenExpired(connection.token)) {
+    return (await refreshGmailToken(userId, connection)).accessToken;
+  }
+
+  return connection.token.accessToken;
+}
+
+async function fetchGmailJson(path, accessToken) {
+  const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/${path}`, {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error('Gmail API request failed.');
+  }
+
+  return response.json();
+}
+
+async function listGmailTrackingMessages(userId, connection) {
+  const accessToken = await getValidGmailAccessToken(userId, connection);
+  const query = 'newer_than:90d (tracking OR shipment OR shipped OR package OR delivery OR UPS OR FedEx OR USPS OR DHL)';
+  const params = new URLSearchParams({
+    maxResults: '20',
+    q: query,
+  });
+  const list = await fetchGmailJson(`messages?${params.toString()}`, accessToken);
+  const messages = list.messages || [];
+
+  return Promise.all(messages.map(async (message) => {
+    const detailParams = new URLSearchParams({
+      format: 'full',
+    });
+    const detail = await fetchGmailJson(`messages/${message.id}?${detailParams.toString()}`, accessToken);
+    const headers = detail.payload?.headers || [];
+    const subject = getHeader(headers, 'Subject') || '(No subject)';
+    const from = getHeader(headers, 'From') || 'Unknown sender';
+    const body = getPlainTextFromPayload(detail.payload) || detail.snippet || '';
+
+    return {
+      id: detail.id,
+      providerId: 'gmail',
+      from,
+      subject,
+      body: detail.snippet || body.slice(0, 280),
+      receivedAt: detail.internalDate ? new Date(Number(detail.internalDate)).toISOString() : new Date().toISOString(),
+      trackingCandidates: extractTrackingNumbers(`${subject}\n${body}\n${detail.snippet || ''}`),
+    };
+  }));
+}
+
 export async function listEmailInbox(userId) {
   const connections = await listConnections(userId);
   const connectedEmailProviders = Object.keys(connections).filter((providerId) => {
@@ -158,7 +292,11 @@ export async function listEmailInbox(userId) {
   });
 
   if (!connectedEmailProviders.length) {
-    throw new Error('Connect Gmail or Outlook first.');
+    throw new Error('Connect Gmail first.');
+  }
+
+  if (connections.gmail?.token?.mode === 'oauth') {
+    return listGmailTrackingMessages(userId, connections.gmail);
   }
 
   return devMessages.map((message) => ({

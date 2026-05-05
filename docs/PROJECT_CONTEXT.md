@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.10.1`
+- Version: `1.11.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -68,6 +68,8 @@ Version `1.9.0` adds a backend OAuth credential setup page and changes Linked Ac
 Version `1.10.0` restores the production UX model: users never see credential setup. Provider credentials are backend-owned, dev setup/dev linking are opt-in by environment flag only, and unconfigured providers show as coming soon until Allio has provider approval and deployed OAuth credentials.
 
 Version `1.10.1` removes account setup from Home, hamburger navigation, Delivery, Email, Wikipedia, and Movie/TV screens. Provider connection management now lives only under Settings.
+
+Version `1.11.0` implements Gmail as the first real OAuth-backed account link: Connect Gmail redirects to Google consent, backend stores tokens, refreshes access tokens, calls Gmail API for likely shipping emails, and extracts tracking numbers.
 
 ## Technical Notes
 

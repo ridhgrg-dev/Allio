@@ -8,6 +8,15 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.11.0 - 2026-05-05
+
+- Implemented Gmail as the first real OAuth-backed account connection.
+- Added Gmail OAuth offline consent parameters for refresh-token access.
+- Added Gmail token refresh handling in the backend.
+- Added Gmail API inbox scanning for likely shipping emails and tracking-number extraction.
+- Updated Account Setup copy so Gmail is the first production connection path and other providers stay on the roadmap.
+- Removed default fake linked accounts from the production account setup state.
+
 ## 1.10.1 - 2026-05-05
 
 - Removed Account Setup / Connected Services from Home dashboard cards and hamburger navigation.

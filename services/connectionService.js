@@ -4,7 +4,7 @@ export const connectionGroups = [
   {
     id: 'delivery',
     title: 'Delivery services',
-    description: 'Prepare Allio to unify package updates from carriers and shipment APIs.',
+    description: 'Carrier account sync is planned after provider approval. Gmail tracking extraction is first.',
     providers: [
       ...serviceGroups.delivery.providers.map((provider) => ({ ...provider, status: 'available' })),
     ],
@@ -24,7 +24,7 @@ export const connectionGroups = [
   {
     id: 'email',
     title: 'Email accounts',
-    description: 'Keep the MVP manual while reserving a clean path to OAuth providers.',
+    description: 'Connect Gmail to let Allio read shipping emails and extract tracking numbers.',
     providers: serviceGroups.email.providers.map((provider) => ({ ...provider, status: 'available' })),
   },
 ];
