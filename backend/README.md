@@ -4,7 +4,7 @@ This backend is the foundation for real account linking.
 
 It does not ask users for carrier passwords or developer API keys. Instead, it prepares the correct production model:
 
-1. Allio registers an app with UPS/FedEx/USPS/DHL and Gmail/Outlook.
+1. Allio registers a Google OAuth app for Gmail.
 2. User taps Connect in the mobile app.
 3. Backend starts provider OAuth for that carrier.
 4. Carrier redirects back to `/api/auth/:provider/callback`.
@@ -58,6 +58,8 @@ For local developer-only testing, `/setup` and `/dev/connect/*` are disabled by 
 ```bash
 ALLOW_DEV_OAUTH_SETUP=true ALLOW_DEV_PROVIDER_LINKS=true npm run dev
 ```
+
+Carrier account linking is intentionally deferred. Delivery tracking should use tracking-number input first.
 
 Before production:
 

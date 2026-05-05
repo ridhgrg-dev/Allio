@@ -2,7 +2,7 @@ import React from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 
-export default function CarrierTrackingModeCard({ linkedCarriers, selectedCarrierId, onSelectCarrier }) {
+export default function CarrierTrackingModeCard({ carriers, selectedCarrierId, onSelectCarrier }) {
   return (
     <View style={styles.card}>
       <View style={styles.header}>
@@ -10,34 +10,30 @@ export default function CarrierTrackingModeCard({ linkedCarriers, selectedCarrie
           <Ionicons name="git-network-outline" size={22} color="#0f766e" />
         </View>
         <View style={styles.copy}>
-          <Text style={styles.title}>Track with linked carriers</Text>
+          <Text style={styles.title}>Carrier</Text>
           <Text style={styles.subtitle}>
-            Choose the carrier account Allio should use for this tracking lookup.
+            Choose a carrier or leave it manual. Account linking comes later.
           </Text>
         </View>
       </View>
 
-      {linkedCarriers.length ? (
-        <View style={styles.chips}>
-          {linkedCarriers.map((carrier) => {
-            const selected = carrier.id === selectedCarrierId;
+      <View style={styles.chips}>
+        {carriers.map((carrier) => {
+          const selected = carrier.id === selectedCarrierId;
 
-            return (
-              <Pressable
-                key={carrier.id}
-                accessibilityRole="button"
-                onPress={() => onSelectCarrier(carrier.id)}
-                style={[styles.chip, selected && styles.chipSelected]}
-              >
-                <Ionicons name={carrier.icon} size={16} color={selected ? '#ffffff' : '#0f766e'} />
-                <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{carrier.name}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-      ) : (
-        <Text style={styles.empty}>Connect UPS, FedEx, USPS, or DHL first.</Text>
-      )}
+          return (
+            <Pressable
+              key={carrier.id}
+              accessibilityRole="button"
+              onPress={() => onSelectCarrier(selected ? '' : carrier.id)}
+              style={[styles.chip, selected && styles.chipSelected]}
+            >
+              <Ionicons name={carrier.icon} size={16} color={selected ? '#ffffff' : '#0f766e'} />
+              <Text style={[styles.chipText, selected && styles.chipTextSelected]}>{carrier.name}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
     </View>
   );
 }
@@ -106,10 +102,5 @@ const styles = StyleSheet.create({
   },
   chipTextSelected: {
     color: '#ffffff',
-  },
-  empty: {
-    color: '#6b7280',
-    fontSize: 13,
-    fontWeight: '700',
   },
 });

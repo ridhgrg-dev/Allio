@@ -9,7 +9,6 @@ import {
   disconnectBackendConnection,
   loadBackendConnections,
   loadBackendProviderStatus,
-  openDeveloperOAuthSetup,
   startEmailConnection,
 } from '../services/backendService';
 import { connectionGroups } from '../services/connectionService';
@@ -97,15 +96,7 @@ export default function ConnectionsScreen() {
       }
 
       if (!status?.configured) {
-        if (status?.setupAvailable) {
-          const opened = await openDeveloperOAuthSetup();
-          if (opened) {
-            setBackendMessage('Gmail setup opened. Add Google OAuth credentials, restart the backend if needed, then tap Refresh Linked Accounts.');
-          }
-          return;
-        }
-
-        setBackendMessage(`${provider.name} is not available yet. In production, Allio will enable this after backend provider approval and OAuth credentials are deployed. Users will only tap Connect and sign in.`);
+        setBackendMessage('Gmail login is not enabled on the backend yet. Users will only sign in through the Google consent screen once Allio backend credentials are configured.');
         return;
       }
 
@@ -126,23 +117,13 @@ export default function ConnectionsScreen() {
       return 'Saved through Allio backend for this local user.';
     }
 
-    if (group.id === 'delivery') {
-      return 'Coming soon. Gmail tracking extraction is the first production account link.';
-    }
-
-    if (group.id === 'email' && ['gmail', 'outlook'].includes(provider.id)) {
-      if (provider.id !== 'gmail') {
-        return 'Coming soon after Gmail account linking is stable.';
-      }
-
+    if (group.id === 'email' && provider.id === 'gmail') {
       return status?.configured
         ? 'Available. Sign in with Google to let Allio read shipping emails.'
-        : status?.setupAvailable
-          ? 'Local setup needed. Tap Connect to add Google OAuth credentials.'
-          : 'Gmail OAuth is not configured on the backend yet.';
+        : 'Gmail OAuth is not configured on the backend yet.';
     }
 
-    return 'Coming soon after Gmail account linking is stable.';
+    return 'Coming soon.';
   }
 
   return (

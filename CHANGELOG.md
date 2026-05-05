@@ -8,6 +8,13 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.12.0 - 2026-05-05
+
+- Removed UPS/FedEx/USPS/DHL account linking from Account Setup for now.
+- Changed Delivery to tracking-number input with optional carrier context instead of linked carrier accounts.
+- Kept Gmail as the only account connection path.
+- Removed mobile navigation to developer OAuth setup; users only go through Google's consent flow once backend credentials are configured.
+
 ## 1.11.1 - 2026-05-05
 
 - Made local Gmail setup reachable from the Gmail Connect action when developer setup mode is enabled.

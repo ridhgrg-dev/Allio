@@ -51,7 +51,7 @@ The Expo app also defaults to `http://192.168.8.142:4100` for local development.
 
 In production, users never enter API keys, client IDs, or secrets. Allio's backend owns provider credentials, and users only tap Connect, sign in on the provider page, and return to Allio.
 
-Gmail is the first real account-linking path. The backend uses Google OAuth, stores the user's secure token server-side, calls the Gmail API with `gmail.readonly`, scans likely shipping emails, and extracts tracking numbers. Google requires Allio to register an OAuth app and callback URL before Gmail Connect is available. Google does not accept raw LAN IP redirect URIs for real OAuth, so production needs HTTPS on an approved domain.
+Gmail is the first real account-linking path. The backend uses Google OAuth, stores the user's secure token server-side, calls the Gmail API with `gmail.readonly`, scans likely shipping emails, and extracts tracking numbers. Users only sign in through Google's consent workflow; they never enter client secrets. Google requires Allio to register an OAuth app and callback URL before Gmail Connect is available. Google does not accept raw LAN IP redirect URIs for real OAuth, so production needs HTTPS on an approved domain.
 
 ## Structure
 
@@ -63,8 +63,8 @@ Gmail is the first real account-linking path. The backend uses Google OAuth, sto
 
 ## MVP Integration Notes
 
-- Delivery tracking is mocked behind `services/deliveryService.js` for future AfterShip or EasyPost integration.
-- Direct carrier account linking uses the backend OAuth foundation in `backend/`; Linked Accounts can connect, refresh, and disconnect UPS, FedEx, USPS, and DHL.
+- Delivery tracking is tracking-number based for now; users can choose UPS, FedEx, USPS, or DHL context without linking individual carrier accounts.
+- Direct carrier account linking is deferred until later.
 - Gmail inbox checking uses backend OAuth and the Gmail API to scan shipping emails for tracking numbers.
 - Wikipedia search uses the public Wikipedia REST search endpoint.
 - Movie/TV search is mocked behind `services/movieService.js` for future TMDB or OMDb integration.

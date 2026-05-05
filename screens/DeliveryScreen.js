@@ -7,9 +7,7 @@ import InputField from '../components/InputField';
 import PrimaryButton from '../components/PrimaryButton';
 import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
-import useLinkedAccounts from '../hooks/useLinkedAccounts';
 import { serviceGroups } from '../services/accountLinkService';
-import { trackWithBackendCarrier } from '../services/backendService';
 import { trackPackage } from '../services/deliveryService';
 import {
   loadDeliveryHistory,
@@ -25,13 +23,9 @@ export default function DeliveryScreen() {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState([]);
   const [selectedCarrierId, setSelectedCarrierId] = useState('');
-  const { linkedAccounts, linkError } = useLinkedAccounts();
 
   const favorites = useMemo(() => history.filter((item) => item.favorite), [history]);
-  const linkedCarriers = useMemo(() => {
-    return serviceGroups.delivery.providers.filter((provider) => linkedAccounts[provider.id]);
-  }, [linkedAccounts]);
-  const selectedCarrier = linkedCarriers.find((carrier) => carrier.id === selectedCarrierId) || linkedCarriers[0];
+  const selectedCarrier = serviceGroups.delivery.providers.find((carrier) => carrier.id === selectedCarrierId);
 
   useEffect(() => {
     let mounted = true;
@@ -73,21 +67,9 @@ export default function DeliveryScreen() {
     setLoading(true);
 
     try {
-      let result;
-
-      try {
-        result = selectedCarrier
-          ? await trackWithBackendCarrier(selectedCarrier.id, nextTrackingNumber)
-          : null;
-      } catch (backendErr) {
-        result = null;
-      }
-
-      if (!result) {
-        result = await trackPackage(nextTrackingNumber, {
-          preferredCarrier: selectedCarrier?.name || 'Manual carrier lookup',
-        });
-      }
+      const result = await trackPackage(nextTrackingNumber, {
+        preferredCarrier: selectedCarrier?.name || 'Manual carrier lookup',
+      });
 
       setShipment(result);
       setTrackingNumber(result.trackingNumber);
@@ -110,13 +92,12 @@ export default function DeliveryScreen() {
         icon="cube-outline"
         accent="#0f766e"
         title="Track Every Delivery"
-        description="Enter a tracking number, save important shipments, and use linked carrier context managed from Settings."
+        description="Enter a tracking number, pick a carrier if you know it, and save important shipments."
         stat="25"
         statLabel="saved items"
       />
-      {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <CarrierTrackingModeCard
-        linkedCarriers={linkedCarriers}
+        carriers={serviceGroups.delivery.providers}
         selectedCarrierId={selectedCarrier?.id}
         onSelectCarrier={setSelectedCarrierId}
       />

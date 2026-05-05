@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.11.1`
+- Version: `1.12.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -23,7 +23,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Delivery tracking with mock tracking results.
 - Delivery tracking history and favorite tracking numbers.
 - Keyboard-aware forms and submit actions across search/tracking/email screens.
-- Direct carrier account linking UX for UPS, FedEx, USPS, and DHL.
+- Delivery tracking number input with optional UPS/FedEx/USPS/DHL carrier context.
 - Backend foundation for user-scoped carrier OAuth connections.
 - Backend foundation for user-scoped Gmail/Outlook email OAuth connections.
 - Wikipedia search using the public Wikipedia REST endpoint.
@@ -37,10 +37,10 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 Keep paid or complex integrations mocked until the UI and user flow are validated.
 
-- Delivery: direct carrier account UX now; later add real UPS/FedEx/USPS/DHL OAuth through a backend.
+- Delivery: tracking-number input now; individual carrier account linking is deferred.
 - Wikipedia: real public search now; later add account-aware features if useful.
 - Movie/TV: mock now; later use TMDB through a backend proxy.
-- Email: Gmail/Outlook OAuth backend foundation now; production needs real provider app credentials and token storage hardening.
+- Email: Gmail OAuth is the first account connection path; production needs backend-owned Google credentials and token storage hardening.
 - Account linking: mock now; later use provider-specific OAuth/API setup.
 
 Provider sign-in links open real external account pages, but most providers do not yet have OAuth callback handling in Allio.
@@ -72,6 +72,8 @@ Version `1.10.1` removes account setup from Home, hamburger navigation, Delivery
 Version `1.11.0` implements Gmail as the first real OAuth-backed account link: Connect Gmail redirects to Google consent, backend stores tokens, refreshes access tokens, calls Gmail API for likely shipping emails, and extracts tracking numbers.
 
 Version `1.11.1` makes Gmail Connect open the local developer setup page when Gmail OAuth credentials are missing and backend dev setup mode is enabled.
+
+Version `1.12.0` removes carrier/provider linking from Account Setup for now. Delivery is tracking-number based with optional carrier context, and Gmail remains the only account connection path through Google OAuth consent.
 
 ## Technical Notes
 
