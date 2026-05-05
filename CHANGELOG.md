@@ -8,6 +8,14 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.2.1 - 2026-05-04
+
+- Added keyboard-aware screen layout so forms are not hidden while typing.
+- Added keyboard submit actions for tracking, Wikipedia search, Movie/TV search, and email form fields.
+- Improved tracking number normalization for pasted values with spaces or dashes.
+- Added friendlier tracking number validation.
+- Polished input field styling and search feedback.
+
 ## 1.2.0 - 2026-05-04
 
 - Added on-device persistence for linked provider accounts with AsyncStorage.

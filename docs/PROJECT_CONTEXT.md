@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.2.0`
+- Version: `1.2.1`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -22,6 +22,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Icon-led feature heroes for each major section.
 - Delivery tracking with mock tracking results.
 - Delivery tracking history and favorite tracking numbers.
+- Keyboard-aware forms and submit actions across search/tracking/email screens.
 - Wikipedia search using the public Wikipedia REST endpoint.
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.

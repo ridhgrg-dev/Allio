@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import AccountLinkPanel from '../components/AccountLinkPanel';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
@@ -18,6 +18,7 @@ export default function MovieScreen() {
   const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSearch() {
+    Keyboard.dismiss();
     setError('');
     setResults([]);
     setLoading(true);
@@ -26,7 +27,7 @@ export default function MovieScreen() {
       const nextResults = await searchMovies(query);
       setResults(nextResults);
       if (!nextResults.length) {
-        setError('No mock movie or TV results found.');
+        setError('No movie or TV results found.');
       }
     } catch (err) {
       setError(err.message);
@@ -57,6 +58,9 @@ export default function MovieScreen() {
           value={query}
           onChangeText={setQuery}
           placeholder="Example: Arrival"
+          autoComplete="off"
+          returnKeyType="search"
+          onSubmitEditing={handleSearch}
         />
         <PrimaryButton title="Search" onPress={handleSearch} disabled={loading} />
       </View>

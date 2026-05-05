@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import AccountLinkPanel from '../components/AccountLinkPanel';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
@@ -10,6 +10,8 @@ import { serviceGroups } from '../services/accountLinkService';
 import { sendMockEmail } from '../services/emailService';
 
 export default function EmailScreen() {
+  const subjectRef = useRef(null);
+  const bodyRef = useRef(null);
   const [recipient, setRecipient] = useState('');
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
@@ -19,6 +21,7 @@ export default function EmailScreen() {
   const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSend() {
+    Keyboard.dismiss();
     setError('');
     setConfirmation('');
     setLoading(true);
@@ -57,19 +60,27 @@ export default function EmailScreen() {
           placeholder="name@example.com"
           keyboardType="email-address"
           autoCapitalize="none"
+          autoComplete="email"
+          returnKeyType="next"
+          onSubmitEditing={() => subjectRef.current?.focus()}
         />
         <InputField
+          inputRef={subjectRef}
           label="Subject"
           value={subject}
           onChangeText={setSubject}
           placeholder="What is this about?"
+          returnKeyType="next"
+          onSubmitEditing={() => bodyRef.current?.focus()}
         />
         <InputField
+          inputRef={bodyRef}
           label="Message"
           value={body}
           onChangeText={setBody}
           placeholder="Write your message"
           multiline
+          blurOnSubmit={false}
         />
         <PrimaryButton title="Send Email" onPress={handleSend} disabled={loading} />
       </View>

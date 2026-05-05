@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Keyboard, StyleSheet, Text, View } from 'react-native';
 import AccountLinkPanel from '../components/AccountLinkPanel';
 import DeliveryHistoryCard from '../components/DeliveryHistoryCard';
 import FeatureHero from '../components/FeatureHero';
@@ -61,6 +61,7 @@ export default function DeliveryScreen() {
   }
 
   async function handleTrack(nextTrackingNumber = trackingNumber) {
+    Keyboard.dismiss();
     setError('');
     setShipment(null);
     setLoading(true);
@@ -105,6 +106,9 @@ export default function DeliveryScreen() {
           onChangeText={setTrackingNumber}
           placeholder="Example: ALLIO123456"
           autoCapitalize="characters"
+          autoComplete="off"
+          returnKeyType="search"
+          onSubmitEditing={() => handleTrack()}
         />
         <PrimaryButton title="Track Package" onPress={handleTrack} disabled={loading} />
       </View>

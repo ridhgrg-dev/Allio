@@ -17,10 +17,22 @@ const mockUpdates = [
 ];
 
 export async function trackPackage(trackingNumber) {
-  const normalized = trackingNumber.trim().toUpperCase();
+  const normalized = String(trackingNumber || '')
+    .trim()
+    .replace(/\s+/g, '')
+    .replace(/-/g, '')
+    .toUpperCase();
 
   if (!normalized) {
     throw new Error('Enter a tracking number.');
+  }
+
+  if (normalized.length < 5) {
+    throw new Error('Tracking number looks too short.');
+  }
+
+  if (!/^[A-Z0-9]+$/.test(normalized)) {
+    throw new Error('Use only letters and numbers for now.');
   }
 
   // Future integration point: call AfterShip/EasyPost here and map carrier events

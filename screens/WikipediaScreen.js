@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Keyboard, StyleSheet, Text, View } from 'react-native';
 import AccountLinkPanel from '../components/AccountLinkPanel';
 import FeatureHero from '../components/FeatureHero';
 import InputField from '../components/InputField';
@@ -18,6 +18,7 @@ export default function WikipediaScreen() {
   const { linkedAccounts, toggleLinked, linkError } = useLinkedAccounts();
 
   async function handleSearch() {
+    Keyboard.dismiss();
     setError('');
     setResults([]);
     setLoading(true);
@@ -57,11 +58,15 @@ export default function WikipediaScreen() {
           value={query}
           onChangeText={setQuery}
           placeholder="Example: renewable energy"
+          autoCapitalize="none"
+          autoComplete="off"
+          returnKeyType="search"
+          onSubmitEditing={handleSearch}
         />
         <PrimaryButton title="Search" onPress={handleSearch} disabled={loading} />
       </View>
 
-      {loading ? <ActivityIndicator color="#236c5e" style={styles.loader} /> : null}
+      {loading ? <ActivityIndicator color="#3155d4" style={styles.loader} /> : null}
       {error ? <Text style={styles.error}>{error}</Text> : null}
 
       <View style={styles.results}>
