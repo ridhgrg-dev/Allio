@@ -6,6 +6,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
+backend/.env
+backend/data/
 *.jks
 *.p8
 *.p12

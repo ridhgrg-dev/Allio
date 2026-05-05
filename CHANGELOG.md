@@ -8,6 +8,15 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.5.0 - 2026-05-05
+
+- Added a backend foundation for user-scoped carrier account linking.
+- Added OAuth start/callback routes for UPS, FedEx, USPS, and DHL.
+- Added local development persistence for user carrier connection records.
+- Added backend tracking endpoint shape for connected carrier accounts.
+- Added mobile backend service helpers and persistent Allio user ids.
+- Added backend run instructions and optional Expo backend URL configuration.
+
 ## 1.4.0 - 2026-05-04
 
 - Removed the AfterShip API-key connector from the user-facing delivery flow.

@@ -3,14 +3,18 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { openProviderSignIn } from '../services/accountLinkService';
 
-export default function AccountLinkPanel({ group, linkedAccounts, onToggleLinked }) {
+export default function AccountLinkPanel({ group, linkedAccounts, onToggleLinked, onOpenProvider }) {
   const [error, setError] = useState('');
 
   async function handleOpen(provider) {
     setError('');
 
     try {
-      await openProviderSignIn(provider);
+      const handled = onOpenProvider ? await onOpenProvider(provider) : false;
+
+      if (!handled) {
+        await openProviderSignIn(provider);
+      }
     } catch (err) {
       setError(err.message);
     }

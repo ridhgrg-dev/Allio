@@ -10,6 +10,7 @@ import ResultCard from '../components/ResultCard';
 import ScreenContainer from '../components/ScreenContainer';
 import useLinkedAccounts from '../hooks/useLinkedAccounts';
 import { serviceGroups } from '../services/accountLinkService';
+import { startCarrierConnection, trackWithBackendCarrier } from '../services/backendService';
 import { trackPackage } from '../services/deliveryService';
 import {
   loadDeliveryHistory,
@@ -73,9 +74,22 @@ export default function DeliveryScreen() {
     setLoading(true);
 
     try {
-      const result = await trackPackage(nextTrackingNumber, {
-        preferredCarrier: selectedCarrier?.name || 'Manual carrier lookup',
-      });
+      let result;
+
+      try {
+        result = selectedCarrier
+          ? await trackWithBackendCarrier(selectedCarrier.id, nextTrackingNumber)
+          : null;
+      } catch (backendErr) {
+        result = null;
+      }
+
+      if (!result) {
+        result = await trackPackage(nextTrackingNumber, {
+          preferredCarrier: selectedCarrier?.name || 'Manual carrier lookup',
+        });
+      }
+
       setShipment(result);
       setTrackingNumber(result.trackingNumber);
       await persistHistory(upsertShipmentHistory(history, result));
@@ -89,6 +103,17 @@ export default function DeliveryScreen() {
   async function handleToggleFavorite(trackingNumberToToggle) {
     setError('');
     await persistHistory(toggleShipmentFavorite(history, trackingNumberToToggle));
+  }
+
+  async function handleOpenCarrier(provider) {
+    const openedBackend = await startCarrierConnection(provider.id);
+
+    if (openedBackend) {
+      await toggleLinked(provider.id);
+      return true;
+    }
+
+    return false;
   }
 
   return (
@@ -105,6 +130,7 @@ export default function DeliveryScreen() {
         group={serviceGroups.delivery}
         linkedAccounts={linkedAccounts}
         onToggleLinked={toggleLinked}
+        onOpenProvider={handleOpenCarrier}
       />
       {linkError ? <Text style={styles.error}>{linkError}</Text> : null}
       <CarrierTrackingModeCard

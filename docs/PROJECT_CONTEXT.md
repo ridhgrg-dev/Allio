@@ -8,7 +8,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 
 ## Current Version
 
-- Version: `1.4.0`
+- Version: `1.5.0`
 - Expo SDK: `54`
 - Git branch: `main`
 - GitHub repo: `https://github.com/ridhgrg-dev/Allio`
@@ -24,6 +24,7 @@ Allio is a React Native Expo mobile app for iOS and Android. The product vision 
 - Delivery tracking history and favorite tracking numbers.
 - Keyboard-aware forms and submit actions across search/tracking/email screens.
 - Direct carrier account linking UX for UPS, FedEx, USPS, and DHL.
+- Backend foundation for user-scoped carrier OAuth connections.
 - Wikipedia search using the public Wikipedia REST endpoint.
 - Movie/TV search using mock data.
 - Email compose screen with mock send confirmation.
@@ -40,7 +41,9 @@ Keep paid or complex integrations mocked until the UI and user flow are validate
 
 Provider sign-in links open real external account pages, but most providers do not yet have OAuth callback handling in Allio.
 
-Local persistence currently stores linked account booleans plus delivery history/favorites. Do not ask users for carrier passwords or developer API keys. True direct carrier sync should use carrier OAuth/API app registration with a backend token exchange.
+Local persistence currently stores linked account booleans plus delivery history/favorites. Do not ask users for carrier passwords or developer API keys. True direct carrier sync should use carrier OAuth/API app registration with the `backend/` token exchange foundation.
+
+When backend is available, set `EXPO_PUBLIC_ALLIO_API_URL` before starting Expo. On a physical phone, use the Mac LAN IP instead of `localhost`.
 
 ## Technical Notes
 

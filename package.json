@@ -1,6 +1,6 @@
 {
   "name": "allio",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
@@ -8,6 +8,7 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
+    "backend:dev": "cd backend && npm run dev",
     "check:deps": "expo install --check",
     "export:ios": "expo export --platform ios --output-dir /private/tmp/allio-export-ios",
     "export:android": "expo export --platform android --output-dir /private/tmp/allio-export-android"
