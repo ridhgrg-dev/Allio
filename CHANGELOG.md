@@ -8,6 +8,12 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.8.3 - 2026-05-05
+
+- Updated the root backend dev script to bind on `0.0.0.0` for Expo Go device access.
+- Updated backend examples to use `http://192.168.1.166:4100`.
+- Documented `npm run backend:dev` as the simple local backend start command.
+
 ## 1.8.2 - 2026-05-05
 
 - Added `.nvmrc` and Node engine guidance for Node 20/22 LTS.

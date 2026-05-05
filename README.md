@@ -35,6 +35,12 @@ cp .env.example .env
 npm run dev
 ```
 
+From the project root you can also run the phone-ready backend command:
+
+```bash
+npm run backend:dev
+```
+
 Then start Expo with your backend URL:
 
 ```bash

@@ -16,20 +16,20 @@ It does not ask users for carrier passwords or developer API keys. Instead, it p
 ```bash
 cd backend
 cp .env.example .env
-npm run dev
+HOST=0.0.0.0 APP_BASE_URL=http://192.168.1.166:4100 npm run dev
 ```
 
 The server defaults to:
 
 ```text
-http://localhost:4100
+http://192.168.1.166:4100
 ```
 
 For Expo Go on a physical phone, expose your Mac's LAN IP:
 
 ```bash
-HOST=0.0.0.0 APP_BASE_URL=http://YOUR_MAC_IP:4100 npm run dev
-EXPO_PUBLIC_ALLIO_API_URL=http://YOUR_MAC_IP:4100 npx expo start --clear
+npm run backend:dev
+npm start
 ```
 
 ## Current Provider State
