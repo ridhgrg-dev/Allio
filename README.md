@@ -24,8 +24,10 @@ npm run dev
 Then start Expo with your backend URL:
 
 ```bash
-EXPO_PUBLIC_ALLIO_API_URL=http://YOUR_MAC_IP:4100 npx expo start --clear
+EXPO_PUBLIC_ALLIO_API_URL=http://192.168.1.166:4100 npx expo start --clear
 ```
+
+The Expo app also defaults to `http://192.168.1.166:4100` for local development. You can override it anytime from Settings.
 
 ## Structure
 

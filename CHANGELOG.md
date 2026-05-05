@@ -8,6 +8,11 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.7.1 - 2026-05-05
+
+- Set the local development backend fallback URL to `http://192.168.1.166:4100`.
+- Updated the Settings backend URL placeholder and run docs to match the current Mac LAN IP.
+
 ## 1.7.0 - 2026-05-05
 
 - Added hamburger-style app menu from the Home dashboard.
