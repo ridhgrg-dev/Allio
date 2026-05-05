@@ -8,6 +8,12 @@ The project uses semantic versioning:
 - Minor: new screens, new mocked flows, meaningful UI/UX additions.
 - Major: breaking navigation/data model changes or production API architecture changes.
 
+## 1.11.1 - 2026-05-05
+
+- Made local Gmail setup reachable from the Gmail Connect action when developer setup mode is enabled.
+- Enabled developer OAuth setup in the local backend dev script while keeping dev provider linking disabled.
+- Added backend provider status metadata so the app can distinguish setup-needed from production unavailable.
+
 ## 1.11.0 - 2026-05-05
 
 - Implemented Gmail as the first real OAuth-backed account connection.

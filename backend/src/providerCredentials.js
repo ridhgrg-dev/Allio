@@ -56,6 +56,7 @@ export function listProviderCredentialStatus(baseProviders, kind, allowLocalOver
     name: provider.name,
     configured: Boolean(provider.clientId && provider.clientSecret && provider.authUrl && provider.tokenUrl),
     mode: provider.clientId && provider.clientSecret ? 'oauth' : 'unconfigured',
+    setupAvailable: allowLocalOverrides,
     authUrl: provider.authUrl || null,
     tokenUrl: provider.tokenUrl || null,
     callbackUrl: provider.callbackUrl || null,

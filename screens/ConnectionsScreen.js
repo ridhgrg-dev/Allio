@@ -9,6 +9,7 @@ import {
   disconnectBackendConnection,
   loadBackendConnections,
   loadBackendProviderStatus,
+  openDeveloperOAuthSetup,
   startEmailConnection,
 } from '../services/backendService';
 import { connectionGroups } from '../services/connectionService';
@@ -39,6 +40,7 @@ export default function ConnectionsScreen() {
         nextProviderStatus[carrier.id] = {
           configured: carrier.configured,
           mode: carrier.mode,
+          setupAvailable: carrier.setupAvailable,
           kind: 'carrier',
         };
       }
@@ -47,6 +49,7 @@ export default function ConnectionsScreen() {
         nextProviderStatus[emailProvider.id] = {
           configured: emailProvider.configured,
           mode: emailProvider.mode,
+          setupAvailable: emailProvider.setupAvailable,
           kind: 'email',
         };
       }
@@ -94,6 +97,14 @@ export default function ConnectionsScreen() {
       }
 
       if (!status?.configured) {
+        if (status?.setupAvailable) {
+          const opened = await openDeveloperOAuthSetup();
+          if (opened) {
+            setBackendMessage('Gmail setup opened. Add Google OAuth credentials, restart the backend if needed, then tap Refresh Linked Accounts.');
+          }
+          return;
+        }
+
         setBackendMessage(`${provider.name} is not available yet. In production, Allio will enable this after backend provider approval and OAuth credentials are deployed. Users will only tap Connect and sign in.`);
         return;
       }
@@ -126,7 +137,9 @@ export default function ConnectionsScreen() {
 
       return status?.configured
         ? 'Available. Sign in with Google to let Allio read shipping emails.'
-        : 'Gmail OAuth is not configured on the backend yet.';
+        : status?.setupAvailable
+          ? 'Local setup needed. Tap Connect to add Google OAuth credentials.'
+          : 'Gmail OAuth is not configured on the backend yet.';
     }
 
     return 'Coming soon after Gmail account linking is stable.';
